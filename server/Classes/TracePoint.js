@@ -1,6 +1,19 @@
+import Utils from '../common/Utils';
+
 class TracePoint{
-  constructor(obj){
-    this.position = obj.position;
+  timestamp = Utils.GetCurrentUnixtime();
+  
+  position = {
+    x : 0,
+    y : 0,
+    z : 0
+  }
+  constructor(arg){
+    var {position} = arg;
+
+    if(typeof(position) != "undefined"){
+      this.position = position;
+    }
   }
 }
 export default TracePoint;

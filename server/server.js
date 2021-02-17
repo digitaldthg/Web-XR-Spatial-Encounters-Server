@@ -7,6 +7,8 @@ var io = require('socket.io')(port);
 var gameSocket = null;
 
 
+
+
 var friends = {};
 var lines = {};
 var traceLines = {};
@@ -47,26 +49,7 @@ gameSocket = io.on('connection', function(socket){
     setInterval(()=>{
       //console.log(Object.keys(friends));
       var sendData = Object.assign({},friends);
-      delete sendData[socket.id];
-
-      // Object.keys(sendData).map((user)=>{
-      //   sendData[user].transform.position.x = Math.sin(Date.now() * .002) * 5
-      //   sendData[user].transform.position.y = 2 + Math.sin(Date.now() * .0002) * 2
-      //   sendData[user].transform.position.z = Math.cos(Date.now() * .002) * 5
-
-      //   // if(!traceLines.hasOwnProperty(socket.id)){
-      //   //   traceLines[socket.id] = {
-      //   //     id : socket.id,
-      //   //     linePoints : []
-      //   //   };
-      //   // }
-      //     // traceLines[socket.id].linePoints.push({
-      //     //   position : sendData[user].transform.position
-      //     // });
-        
-      // });
-      
-      
+      delete sendData[socket.id];      
       socket.emit("server-friends-update", sendData);
       
       
@@ -79,31 +62,9 @@ gameSocket = io.on('connection', function(socket){
       
       
 
-
+      //send Data for tracelines
       var sendTraceData = Object.assign({},traceLines);
       
-      // Object.keys(traceLines).map((tL)=>{
-      //   console.log(traceLines[tL].linePoints.length);
-      // })
-
-      //console.log(traceLines)
-
-      // Object.keys(sendTraceData).map(trace => {
-      //   var filteredArray = Array.from(sendTraceData[trace].linePoints);
-      //   var max = filteredArray.length;
-
-      //   var maxInt = Math.floor(max * timeOffset);
-      //   //console.log(sendTraceData[trace]);
-
-      //   filteredArray = filteredArray.slice(max,max - maxInt);// .filter( tracePoint => (tracePoint.timestamp > (GetCurrentUnixtime() - (30000000 * timeOffset)) ))
-      
-      //   console.log("filteredArray" , filteredArray.length);
-
-      //   sendTraceData[trace].linePoints = filteredArray;
-      // });
-
-      
-
       //console.log(traceLines, sendTraceData);
       socket.emit("server-trace-update", sendTraceData);
 
@@ -169,10 +130,10 @@ gameSocket = io.on('connection', function(socket){
     });
 
 
-    socket.on('dev-change-time', function(d){
+    socket.on('dev-controls', function(d){
 
       console.log(d.value);
-      timeOffset = d.value;
+      timeOffset = d.timeOffset;
 
     });
 
@@ -209,5 +170,5 @@ function UpdateLines(){
 function GetCurrentUnixtime(){
   return Date.now()
 }
-
+/**/
 
