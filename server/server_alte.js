@@ -31,7 +31,31 @@ class Controller{
     console.log("disconnect from ", socket.id);
     this.store.Disconnect(socket);
   }
+  UpdateLines = () => {
+    if(Object.keys(this.store.users).length > 1){
+  
+  
+      var sortedFriends =  Object.keys(this.store.users).map((userID, index)=>{
 
+        if(index < sortedFriendKeys.length - 1){
+          var lineKeyName = this.store.users[userID].id + friends[sortedFriendKeys[index + 1]].id;
+          if(!lines.hasOwnProperty(lineKeyName)){
+  
+            //console.log(friends[friend]);
+            var posA = friends[friend].transform.position;
+            var posB = friends[sortedFriendKeys[index + 1]].transform.position;
+  
+            lines[lineKeyName] = {
+              id : lineKeyName,
+              users : [friends[friend].id, friends[sortedFriendKeys[index + 1]].id ],
+              positions : [posA, posB],
+              length : 0
+            }
+          }
+        }
+      });
+    }
+  }
   UserInterval = ()=>{
 
     
@@ -44,6 +68,10 @@ class Controller{
       color : this.store.users[user].GetColor(),
       linePoints : this.store.users[user].GetLine(this.store.timeOffset)
     });
+
+    //this.UpdateLines();
+
+    console.log("users" , Object.keys(users) );
 
     this.io.io.emit("server-friends-update", users);
     this.io.io.emit("server-trace-update",lines);

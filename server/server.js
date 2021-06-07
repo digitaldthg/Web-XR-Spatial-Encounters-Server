@@ -1,4 +1,5 @@
 var TracePoint = require("./Classes/TracePoint");
+const UserData = require("./Classes/UserData");
 
 var socketPort = 3000;
 var webPort = 3001;
@@ -15,25 +16,17 @@ var traceLines = {};
 
 var timeOffset = 0;
 
+var controls = {
+  timeOffset : 0,
+  locationSync : true
+}
+
 gameSocket = io.on('connection', function(socket){
     console.log('socket connected: ' + socket.id);
 
     //user
     if(!friends.hasOwnProperty(socket.id)){
-      friends[socket.id] = {
-        id : socket.id,
-        transform : {
-          position : { x : 0,y : 0, z: 0},
-          rotation : { x : 0,y : 0, z: 0, w : 1},
-          scale : { x : 1,y : 1, z: 1},
-        },
-        distance : 0,
-        color : {
-          r : Math.random(),
-          g : Math.random(),
-          b : Math.random()
-        }
-      }
+      friends[socket.id] = UserData({ id : socket.id });
     }
 
 
@@ -49,10 +42,15 @@ gameSocket = io.on('connection', function(socket){
     setInterval(()=>{
       //console.log(Object.keys(friends));
       var sendData = Object.assign({},friends);
+
       delete sendData[socket.id];      
+
+      
+
+    //  console.log("sendData" , sendData);
+
+
       socket.emit("server-friends-update", sendData);
-      
-      
       
       UpdateLines();
       
@@ -63,6 +61,15 @@ gameSocket = io.on('connection', function(socket){
       
 
       //send Data for tracelines
+      var lines = {};
+    
+      Object.keys(this.store.users).map(user => lines[user] = {
+        id : user,
+        color : this.store.users[user].GetColor(),
+        linePoints : this.store.users[user].GetLine(this.store.timeOffset)
+      });
+
+
       var sendTraceData = Object.assign({},traceLines);
       
       //console.log(traceLines, sendTraceData);
@@ -70,12 +77,9 @@ gameSocket = io.on('connection', function(socket){
 
 
 
-    },200);
+    },1000);
 
-
-
-
-
+    
     socket.on('disconnect', function(){
 
       var deletedID = socket.id;
@@ -109,11 +113,13 @@ gameSocket = io.on('connection', function(socket){
       });
 
       console.log('socket disconnected: ' + deletedID);
-    });
+    });   
 
-   
+
     
     socket.on('client-player', function(d){
+
+      if(!friends.hasOwnProperty(socket.id)){friends[socket.id] = UserData(socket.id)}
       
       friends[socket.id] = Object.assign(friends[socket.id], d);
       
@@ -132,7 +138,7 @@ gameSocket = io.on('connection', function(socket){
 
     socket.on('dev-controls', function(d){
 
-      console.log(d.value);
+     // console.log(d.value);
       timeOffset = d.timeOffset;
 
     });

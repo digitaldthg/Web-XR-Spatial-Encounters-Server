@@ -13,7 +13,7 @@ class store{
     this.context = context;
   }
   
-  BindControlls = (socket) => {
+  BindControls = (socket) => {
     socket.on('dev-controls', (d) => this.timeOffset = d.timeOffset);
   }
 
@@ -21,7 +21,7 @@ class store{
     
     this.users[socket.id] = new User(socket);
 
-    this.BindControlls(socket);
+    this.BindControls(socket);
   }
 
 
