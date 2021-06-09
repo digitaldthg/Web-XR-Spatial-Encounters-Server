@@ -51,6 +51,7 @@ class Controller{
       this.envObject.ClearTriangles();
       this.envObject.CreateTriangle( users );
     }
+    //console.log("Send DATA: ",this.envObject.GetData().Triangles[0])
     this.io.io.emit("server-environment-update", this.envObject.GetData());
   }
 
