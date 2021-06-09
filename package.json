@@ -4,7 +4,7 @@
   "description": "The SocketIO testserver for the unity3d socketio package",
   "main": "./server/server_alte.js",
   "scripts": {
-    "start": "nodemon --exec babel-node server/server_alte.js",
+    "start": "nodemon --exec babel-node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

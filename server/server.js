@@ -1,180 +1,63 @@
-var TracePoint = require("./Classes/TracePoint");
-const UserData = require("./Classes/UserData");
+import Socket from './Classes/Socket';
 
-var socketPort = 3000;
-var webPort = 3001;
-var port = process.env.PORT || 3000;
-var io = require('socket.io')(port);
-var gameSocket = null;
+import Friend from './Classes/Friend';
+import Store from './store';
+import {Events} from './Classes/Events';
 
+import EnvironmentObject from './Classes/EnvironmentObject';
 
 
-
-var friends = {};
-var lines = {};
-var traceLines = {};
-
-var timeOffset = 0;
-
-var controls = {
-  timeOffset : 0,
-  locationSync : true
-}
-
-gameSocket = io.on('connection', function(socket){
-    console.log('socket connected: ' + socket.id);
-
-    //user
-    if(!friends.hasOwnProperty(socket.id)){
-      friends[socket.id] = UserData({ id : socket.id });
-    }
-
-
-    //trace Object
-    if(!traceLines.hasOwnProperty(socket.id)){
-      traceLines[socket.id] = {
-        id : socket.id,
-        linePoints : []
-      };
-    }
-
-
-    setInterval(()=>{
-      //console.log(Object.keys(friends));
-      var sendData = Object.assign({},friends);
-
-      delete sendData[socket.id];      
-
-      
-
-    //  console.log("sendData" , sendData);
-
-
-      socket.emit("server-friends-update", sendData);
-      
-      UpdateLines();
-      
-      
-      var sendLineData = Object.assign({},lines);
-      //socket.emit("server-lines-update", sendLineData);
-      
-      
-
-      //send Data for tracelines
-      var lines = {};
+class Controller{
+  events = new Events();
+  store = new Store(this);
+  io = new Socket(this);
+  envObject = new EnvironmentObject(this); 
+  
+  constructor(){
     
-      Object.keys(this.store.users).map(user => lines[user] = {
-        id : user,
-        color : this.store.users[user].GetColor(),
-        linePoints : this.store.users[user].GetLine(this.store.timeOffset)
-      });
+    this.events.addEventListener("connection", this.OnConnect);
+    this.events.addEventListener("disconnect", this.OnDisconnect);
 
 
-      var sendTraceData = Object.assign({},traceLines);
-      
-      //console.log(traceLines, sendTraceData);
-      socket.emit("server-trace-update", sendTraceData);
-
-
-
-    },1000);
-
-    
-    socket.on('disconnect', function(){
-
-      var deletedID = socket.id;
-
-      if(friends.hasOwnProperty(deletedID)){
-        delete friends[deletedID];
-        //console.log('delete socket id -> because disconnected: ' + deletedID);
-      }
-      
-      if(traceLines.hasOwnProperty(deletedID)){
-        delete traceLines[deletedID];
-        //console.log('delete trace -> because disconnected: ' + deletedID);
-      }
-
-      if(Object.keys(lines).length > 0){
-        var toDeleteLineIds = []
-        Object.keys(lines).map((lineID)=>{
-          if(lines[lineID].users.includes(deletedID)){
-            toDeleteLineIds.push(lineID);
-          }
-        });
-
-        toDeleteLineIds.map(lineID => {
-          delete lines[lineID];
-        });
-        
-      }
-
-      socket.broadcast.emit("server-friends-delete", {
-        id : deletedID
-      });
-
-      console.log('socket disconnected: ' + deletedID);
-    });   
-
-
-    
-    socket.on('client-player', function(d){
-
-      if(!friends.hasOwnProperty(socket.id)){friends[socket.id] = UserData(socket.id)}
-      
-      friends[socket.id] = Object.assign(friends[socket.id], d);
-      
-      if(traceLines.hasOwnProperty(socket.id)){
-
-        
-        traceLines[socket.id].linePoints.push({
-          id : socket.id,
-          position : d.transform.position,
-          timestamp : GetCurrentUnixtime()
-        });
-      }
-      
-    });
-
-
-    socket.on('dev-controls', function(d){
-
-     // console.log(d.value);
-      timeOffset = d.timeOffset;
-
-    });
-
-});
-
-
-function UpdateLines(){
-  if(Object.keys(friends).length > 1){
-
-
-    var sortedFriendKeys = Object.keys(friends).sort();
-    var sortedFriends = sortedFriendKeys.map((friend, index)=>{
-      if(index < sortedFriendKeys.length - 1){
-        var lineKeyName = friends[friend].id + friends[sortedFriendKeys[index + 1]].id;
-        if(!lines.hasOwnProperty(lineKeyName)){
-
-          //console.log(friends[friend]);
-          var posA = friends[friend].transform.position;
-          var posB = friends[sortedFriendKeys[index + 1]].transform.position;
-
-          lines[lineKeyName] = {
-            id : lineKeyName,
-            users : [friends[friend].id, friends[sortedFriendKeys[index + 1]].id ],
-            positions : [posA, posB],
-            length : 0
-          }
-        }
-      }
-    });
+    //setInterval(this.Interval, 500);
+    setInterval(this.UserInterval, 500);
+    setInterval(this.SendEnvironment, 500);
   }
+
+  OnConnect = (socket) => {
+    console.log("connection from ", socket.id);
+
+    this.store.Connect(socket);
+    this.envObject.Connect(socket);
+
+  }
+  
+  OnDisconnect = (socket) =>{
+    console.log("disconnect from ", socket.id);
+    this.store.Disconnect(socket);
+  }
+  
+  UserInterval = ()=>{
+    var users = {};
+    Object.keys(this.store.users).map(user => users[user] = this.store.users[user].GetUser());  
+    this.io.io.emit("server-friends-update", users);
+  }
+
+
+  SendEnvironment =  ()=>{
+
+    var users = this.store.GetTriangleUser();
+    if(users.length >= 3){
+      this.envObject.ClearTriangles();
+      this.envObject.CreateTriangle( users );
+    }
+    this.io.io.emit("server-environment-update", this.envObject.GetData());
+  }
+
+
+
+
+
 }
 
-
-function GetCurrentUnixtime(){
-  return Date.now()
-}
-/**/
-
+new Controller();

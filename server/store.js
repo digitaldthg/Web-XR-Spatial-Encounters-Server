@@ -1,5 +1,3 @@
-import UserObject from './Classes/UserObject';
-
 import User from './Classes/User';
 
 
@@ -15,6 +13,9 @@ class store{
   
   BindControls = (socket) => {
     socket.on('dev-controls', (d) => this.timeOffset = d.timeOffset);
+
+    socket.on("client-change-role", this.ChangeRole);
+    
   }
 
   Connect = (socket) =>{
@@ -34,6 +35,27 @@ class store{
     });
   }
 
+  ChangeRole = (data) =>{
+    if(this.users.hasOwnProperty(data.id)){
+      this.users[data.id].data.role = data.role;
+    }
+  }
+  
+
+  GetTriangleUser = () => {
+    if(Object.keys(this.users).length == 0){return []}
+
+    var users = Object.keys(this.users).map( id => {
+      if(this.users[id].data.role == 1){
+        return this.users[id];
+      }else{
+        return null;
+      }
+    }).filter(u => u != null);//s .map((id)=> {console.log(id); return this.users[id] });
+    
+
+    return users;
+  }
 
 }
 
