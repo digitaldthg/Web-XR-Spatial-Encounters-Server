@@ -11,16 +11,20 @@ class Socket{
     context.events.registerEvent("connection");
     context.events.registerEvent("disconnect");
     this.io = io;
-
-
+    this.sockets = {};
+    
     io.on('connection', (socket)=>{
       context.events.dispatchEvent("connection", socket);
 
+      this.sockets[socket.id] = socket;
+
       socket.on("disconnect", ()=>{
         context.events.dispatchEvent("disconnect", socket);
-      })
+
+        delete this.sockets[socket.id];
+      });
       
-     
+      
     });
   }
   

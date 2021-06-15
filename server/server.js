@@ -9,8 +9,8 @@ import EnvironmentObject from './Classes/EnvironmentObject';
 
 class Controller{
   events = new Events();
-  store = new Store(this);
   io = new Socket(this);
+  store = new Store(this);
   envObject = new EnvironmentObject(this); 
   
   constructor(){
@@ -21,7 +21,7 @@ class Controller{
 
     //setInterval(this.Interval, 500);
     setInterval(this.UserInterval, 500);
-    setInterval(this.SendEnvironment, 500);
+    //setInterval(this.SendEnvironment, 500);
   }
 
   OnConnect = (socket) => {
@@ -30,17 +30,39 @@ class Controller{
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
+
   }
   
   OnDisconnect = (socket) =>{
     console.log("disconnect from ", socket.id);
+
+    Object.values(this.store.rooms).map(room =>{
+      if(room.users.hasOwnProperty(socket.id)){
+        delete room.users[socket.id];
+      }
+    });
+
     this.store.Disconnect(socket);
   }
   
   UserInterval = ()=>{
     var users = {};
-    Object.keys(this.store.users).map(user => users[user] = this.store.users[user].GetUser());  
-    this.io.io.emit("server-friends-update", users);
+
+    
+    Object.keys(this.store.rooms).map(roomID => {
+      var usersInRoom = {};
+      Object.keys(this.store.rooms[roomID].users).map(id => {
+        if(this.store.users.hasOwnProperty(id)){ 
+          usersInRoom[id] = this.store.users[id].GetUser();
+        } 
+      });
+
+      this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
+
+    });
+
+    // Object.keys(this.store.users).map(user => users[user] = this.store.users[user].GetUser());  
+    // this.io.io.emit("server-friends-update", users);
   }
 
 
