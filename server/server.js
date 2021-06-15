@@ -10,18 +10,11 @@ import EnvironmentObject from './Classes/EnvironmentObject';
 class Controller {
   events = new Events();
   io = new Socket(this);
-<<<<<<< HEAD
   store = new Store(this);
   envObject = new EnvironmentObject(this); 
   
   constructor(){
     
-=======
-  envObject = new EnvironmentObject(this);
-
-  constructor() {
-
->>>>>>> a01fb4dc1501a81ac04842d3546cfb0d60419901
     this.events.addEventListener("connection", this.OnConnect);
     this.events.addEventListener("disconnect", this.OnDisconnect);
 
