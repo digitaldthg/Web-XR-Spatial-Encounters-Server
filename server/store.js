@@ -46,7 +46,7 @@ class store{
     if(Object.keys(this.users).length == 0){return []}
 
     var users = Object.keys(this.users).map( id => {
-      if(this.users[id].data.role == 1){
+      if(this.users[id].data.role == 0){
         return this.users[id];
       }else{
         return null;

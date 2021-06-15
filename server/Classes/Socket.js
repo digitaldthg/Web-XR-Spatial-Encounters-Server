@@ -1,5 +1,9 @@
-var port = 3000;
-var io = require('socket.io')(port);
+var port = 3333;
+var io = require('socket.io')(port,{ 
+  cors: {
+    origin: '*',
+  }
+});
 
 class Socket{
   
@@ -7,12 +11,16 @@ class Socket{
     context.events.registerEvent("connection");
     context.events.registerEvent("disconnect");
     this.io = io;
+
+
     io.on('connection', (socket)=>{
       context.events.dispatchEvent("connection", socket);
 
       socket.on("disconnect", ()=>{
         context.events.dispatchEvent("disconnect", socket);
       })
+      
+     
     });
   }
   
