@@ -129,17 +129,11 @@ class store{
   }
   
 
-  GetTriangleUser = () => {
+  GetTriangleUser = (roomID) => {
     if(Object.keys(this.users).length == 0){return []}
 
-    var users = Object.keys(this.users).map( id => {
-      if(this.users[id].data.role == 0){
-        return this.users[id];
-      }else{
-        return null;
-      }
-    }).filter(u => u != null);    
-
+    var users = Object.keys(this.rooms[roomID].users).map(userID => this.users[userID]);
+    console.log(users);
     return users;
   }
 

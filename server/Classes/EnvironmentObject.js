@@ -81,7 +81,7 @@ class EnvironmentObject {
 
         for (var tri = 0; tri < numberTris; tri++) {
             var triangle = Object.assign({}, TriangleDataObject);
-            console.log("----Init Tri ", tri, this.data.Triangles.length);
+            //console.log("----Init Tri ", tri, this.data.Triangles.length);
             var posCount = Math.min(users.length, 3) //2 or 3
             var positions = [];
             var posIdx = tri * 3; //0, 3, 6
@@ -113,14 +113,13 @@ class EnvironmentObject {
                 Frequence: this.Frequence,
                 Color: colors[tri]
             });
-            console.log("Frequ ", triangle.Frequence)
+            
             this.data.Triangles[tri] = triangle;
-            console.log("Created Tri ", this.data.Triangles[tri].Frequence)
+            
         }
-        console.log("ALL TRIS")
-        this.data.Triangles.forEach((triData, idx) => {
-            console.log("data tris ", idx, triData.Frequence);
-        });
+        // this.data.Triangles.forEach((triData, idx) => {
+        //     console.log("data tris ", idx, triData.Frequence);
+        // });
         return this.data;
 
         /* for (int tri = 0; tri < numberTris; tri++) {

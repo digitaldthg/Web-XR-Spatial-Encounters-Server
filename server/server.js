@@ -48,7 +48,7 @@ class Controller {
   UserInterval = () => {
     var users = {};
 
-    console.log(Object.keys(this.store.users));
+    //console.log(Object.keys(this.store.users));
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetUsersInRoom(roomID);
       
@@ -61,20 +61,38 @@ class Controller {
 
   SendEnvironment = () => {
 
-    var users = this.store.GetTriangleUser();
+    Object.keys(this.store.rooms).map(roomID => {
+      var usersInRoom = this.store.GetTriangleUser(roomID);
 
-    if (users.length >= 2) {
-      var tris = this.envObject.CreateTriangle(users);
-      tris.Triangles.forEach((triData, idx) => {
-        console.log("trie frequ", idx, triData.Frequence);
-      });
+      console.log(usersInRoom.length);
+      if (usersInRoom.length >= 2) {
+        var tris = this.envObject.CreateTriangle(usersInRoom);
+            // tris.Triangles.forEach((triData, idx) => {
+            //   console.log("trie frequ", idx, triData.Frequence);
+            // });
+  
+            this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
+      }
 
-      this.io.io.emit("server-environment-update", tris);
-    }
-    /*this.envObject.GetData().Triangles.forEach((triData, idx) => {
-      console.log("trie frequ", idx, triData.Frequence);
+
+
+      //this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
+
     });
-    this.io.io.emit("server-environment-update", this.envObject.GetData());*/
+
+
+
+    // var users = this.store.GetTriangleUser();
+
+    // if (users.length >= 2) {
+    //   var tris = this.envObject.CreateTriangle(users);
+    //   tris.Triangles.forEach((triData, idx) => {
+    //     console.log("trie frequ", idx, triData.Frequence);
+    //   });
+
+    //   this.io.io.emit("server-environment-update", tris);
+    // }
+    
   }
 
 
