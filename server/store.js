@@ -20,19 +20,18 @@ class store{
     
     socket.on("create-room", this.CreateRoom);
     socket.on("join-room", this.JoinRoom);
-    socket.on("join-room", this.LeaveRoom);
+    socket.on("leave-room", this.LeaveRoom);
   }
 
   CreateRoom = (data) => {
 
-    console.log("createRoom");
 
     if(!this.rooms.hasOwnProperty(data.room)){
 
       this.rooms[data.room] = { users : {}};
       this.rooms[data.room].users[data.id] = null;
       
-      console.log(this.context.io.sockets[data.id]);
+      //console.log(this.context.io.sockets[data.id]);
 
       this.context.io.sockets[data.id].join(data.room);
 
@@ -89,7 +88,22 @@ class store{
     this.context.events.dispatchEvent("disconnect", data);
   }
 
+  GetUsersInRoom(roomID){
+    var usersInRoom = {}
+    console.log(roomID);
+    if(this.rooms.hasOwnProperty(roomID)){
+      
+      console.log(this.rooms[roomID].users);
+      Object.keys(this.rooms[roomID].users).map(id => {
+        if(this.users.hasOwnProperty(id)){ 
+          usersInRoom[id] = this.users[id].GetUser();
+        } 
+      });
 
+    }
+
+    return usersInRoom;
+  }
 
   Connect = (socket) =>{
     

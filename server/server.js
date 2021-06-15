@@ -48,21 +48,14 @@ class Controller {
   UserInterval = () => {
     var users = {};
 
-    
+    console.log(Object.keys(this.store.users));
     Object.keys(this.store.rooms).map(roomID => {
-      var usersInRoom = {};
-      Object.keys(this.store.rooms[roomID].users).map(id => {
-        if(this.store.users.hasOwnProperty(id)){ 
-          usersInRoom[id] = this.store.users[id].GetUser();
-        } 
-      });
-
+      var usersInRoom = this.store.GetUsersInRoom(roomID);
+      
       this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
 
     });
 
-    // Object.keys(this.store.users).map(user => users[user] = this.store.users[user].GetUser());  
-    // this.io.io.emit("server-friends-update", users);
   }
 
 
