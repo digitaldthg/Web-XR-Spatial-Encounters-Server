@@ -38,6 +38,7 @@ colors[2] = {
 class EnvironmentObject {
     Frequence = 1;
     Scale = 0.5;
+    Speed = 0.1;
     data = {
         Triangles: []
     }
@@ -53,14 +54,14 @@ class EnvironmentObject {
         this.socket.on("client-change-scale", this.ChangeScale);
     }
     ChangeFrequency = (data) => {
-        console.log("Server Change Frequ:", data);
-
+        //console.log("Server Change Frequ:", data);
         this.Frequence = data.frequency;
     }
 
     ChangeScale = (data) => {
         this.Scale = data.scale;
     }
+
 
     GetData = () => {
         return this.data;
@@ -81,6 +82,7 @@ class EnvironmentObject {
 
         for (var tri = 0; tri < numberTris; tri++) {
             var triangle = Object.assign({}, TriangleDataObject);
+            var colorList = [];
             //console.log("----Init Tri ", tri, this.data.Triangles.length);
             var posCount = Math.min(users.length, 3) //2 or 3
             var positions = [];
@@ -91,6 +93,8 @@ class EnvironmentObject {
             }
             for (var i = 0; i < (posCount); i++) {
                 positions[i] = users[posIdx + i].data.transform.position;
+                colorList[i] = users[posIdx + i].data.color;
+                console.log("PLAYER ",users[posIdx + i].data)
             }
 
             positions.map((p) => {
@@ -111,7 +115,7 @@ class EnvironmentObject {
             Object.assign(triangle, {
                 Positions: positions,
                 Frequence: this.Frequence,
-                Color: colors[tri]
+                Color: colorList
             });
             
             this.data.Triangles[tri] = triangle;

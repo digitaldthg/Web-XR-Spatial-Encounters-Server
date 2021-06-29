@@ -4,7 +4,7 @@ class Friend{
 
   constructor(args){
     Object.assign(this, UserData(args));
-    console.log("friend" , this);
+    //console.log("friend" , this);
   }
 }
 

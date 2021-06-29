@@ -11,12 +11,13 @@ class Controller {
   events = new Events();
   io = new Socket(this);
   store = new Store(this);
-  envObject = new EnvironmentObject(this); 
-  
-  constructor(){
-    
+  envObject = new EnvironmentObject(this);
+
+  constructor() {
+
     this.events.addEventListener("connection", this.OnConnect);
     this.events.addEventListener("disconnect", this.OnDisconnect);
+
 
 
     //setInterval(this.Interval, 500);
@@ -30,14 +31,14 @@ class Controller {
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
-
+    socket.on("client-change-speed", this.ChangeSpeed);
   }
 
   OnDisconnect = (socket) => {
     console.log("disconnect from ", socket.id);
 
-    Object.values(this.store.rooms).map(room =>{
-      if(room.users.hasOwnProperty(socket.id)){
+    Object.values(this.store.rooms).map(room => {
+      if (room.users.hasOwnProperty(socket.id)) {
         delete room.users[socket.id];
       }
     });
@@ -51,13 +52,18 @@ class Controller {
     //console.log(Object.keys(this.store.users));
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetUsersInRoom(roomID);
-      
+
       this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
 
     });
 
   }
 
+  ChangeSpeed = (data) => {
+    Object.keys(this.store.rooms).map(roomID => {
+      this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
+    });
+  }
 
   SendEnvironment = () => {
 
@@ -67,11 +73,11 @@ class Controller {
       console.log(usersInRoom.length);
       if (usersInRoom.length >= 2) {
         var tris = this.envObject.CreateTriangle(usersInRoom);
-            // tris.Triangles.forEach((triData, idx) => {
-            //   console.log("trie frequ", idx, triData.Frequence);
-            // });
-  
-            this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
+        // tris.Triangles.forEach((triData, idx) => {
+        //   console.log("trie frequ", idx, triData.Frequence);
+        // });
+
+        this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
       }
 
 
@@ -92,7 +98,7 @@ class Controller {
 
     //   this.io.io.emit("server-environment-update", tris);
     // }
-    
+
   }
 
 
