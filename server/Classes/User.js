@@ -25,7 +25,7 @@ class User{
   }
 
   GetUser(){
-
+    
     var userData = Object.assign({}, this.data);
 
     return userData;
