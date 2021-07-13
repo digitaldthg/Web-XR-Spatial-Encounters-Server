@@ -54,8 +54,8 @@ class EnvironmentObject {
         this.socket.on("client-change-scale", this.ChangeScale);
     }
     ChangeFrequency = (data) => {
-        //console.log("Server Change Frequ:", data);
-        this.Frequence = data.frequency;
+        console.log("Server Change Frequ:", data);
+        this.Frequence = Math.max(0.01,data.frequency);
     }
 
     ChangeScale = (data) => {
@@ -94,7 +94,7 @@ class EnvironmentObject {
             for (var i = 0; i < (posCount); i++) {
                 positions[i] = users[posIdx + i].data.transform.position;
                 colorList[i] = users[posIdx + i].data.color;
-                console.log("PLAYER ",users[posIdx + i].data)
+                //console.log("PLAYER ",users[posIdx + i].data)
             }
 
             positions.map((p) => {

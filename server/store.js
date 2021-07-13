@@ -90,10 +90,8 @@ class store{
 
   GetUsersInRoom(roomID){
     var usersInRoom = {}
-    console.log(roomID);
     if(this.rooms.hasOwnProperty(roomID)){
       
-      console.log(this.rooms[roomID].users);
       Object.keys(this.rooms[roomID].users).map(id => {
         if(this.users.hasOwnProperty(id)){ 
           usersInRoom[id] = this.users[id].GetUser();
@@ -133,7 +131,6 @@ class store{
     if(Object.keys(this.users).length == 0){return []}
 
     var users = Object.keys(this.rooms[roomID].users).map(userID => this.users[userID]);
-    console.log(users);
     return users;
   }
 
