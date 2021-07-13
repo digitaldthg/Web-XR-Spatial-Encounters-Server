@@ -42,7 +42,7 @@ class EnvironmentObject {
     data = {
         Triangles: []
     }
- 
+
     constructor(context) {
         this.context = context;
     }
@@ -55,7 +55,7 @@ class EnvironmentObject {
     }
     ChangeFrequency = (data) => {
         console.log("Server Change Frequ:", data);
-        this.Frequence = Math.max(0.01,data.frequency);
+        this.Frequence = Math.max(0.01, data.frequency);
     }
 
     ChangeScale = (data) => {
@@ -69,6 +69,20 @@ class EnvironmentObject {
     ClearTriangles = () => {
         this.data.Triangles = [];
     }
+
+    GetColor = (playerData) => {
+        var lerpValue = 1 - (playerData.transform.position.y / playerData.transform.headHeight)
+        var color = playerData.color;
+
+        console.log("playerDATA ", color, lerpValue)
+        return {
+            r: color.r + (1 - color.r) * lerpValue,
+            g: color.g + (1 - color.g) * lerpValue,
+            b: color.b + (1 - color.b) * lerpValue,
+            a:1
+        }
+    }
+
 
     CreateTriangle(users) {
         this.data.Triangles = [];
@@ -93,7 +107,7 @@ class EnvironmentObject {
             }
             for (var i = 0; i < (posCount); i++) {
                 positions[i] = users[posIdx + i].data.transform.position;
-                colorList[i] = users[posIdx + i].data.color;
+                colorList[i] = this.GetColor(users[posIdx + i].data);
                 //console.log("PLAYER ",users[posIdx + i].data)
             }
 
@@ -103,13 +117,13 @@ class EnvironmentObject {
                 midPoint.z += p.z
                 return p
             })
-   
-            midPoint.x *= 1/posCount;
-            midPoint.y *= 1/posCount;
-            midPoint.z *= 1/posCount;
 
-            positions =  positions.map((pos) => {
-                return { x: pos.x + (midPoint.x - pos.x)*this.Scale, y: pos.y + (midPoint.y - pos.y)*this.Scale, z: pos.z + (midPoint.z - pos.z)*this.Scale}
+            midPoint.x *= 1 / posCount;
+            midPoint.y *= 1 / posCount;
+            midPoint.z *= 1 / posCount;
+
+            positions = positions.map((pos) => {
+                return { x: pos.x + (midPoint.x - pos.x) * this.Scale, y: pos.y + (midPoint.y - pos.y) * this.Scale, z: pos.z + (midPoint.z - pos.z) * this.Scale }
             })
 
             Object.assign(triangle, {
@@ -117,9 +131,9 @@ class EnvironmentObject {
                 Frequence: this.Frequence,
                 Color: colorList
             });
-            
+
             this.data.Triangles[tri] = triangle;
-            
+
         }
         // this.data.Triangles.forEach((triData, idx) => {
         //     console.log("data tris ", idx, triData.Frequence);
@@ -178,9 +192,9 @@ class EnvironmentObject {
         midPoint.x *= 1/userCount;
         midPoint.y *= 1/userCount;
         midPoint.z *= 1/userCount;
-    
+     
         console.log("Mid Points ", midPoint)
-    
+     
         Object.assign(triangle, {
             Positions: users.map((user) => {
                 var pos = user.data.transform.position;
@@ -196,7 +210,7 @@ class EnvironmentObject {
             }
         });
         console.log("Create Tri:" ,triangle);
-    
+     
         this.data.Triangles.push(triangle);*/
 
     }
