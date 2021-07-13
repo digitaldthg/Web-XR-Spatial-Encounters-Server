@@ -5,6 +5,7 @@ import Store from './store';
 import { Events } from './Classes/Events';
 
 import EnvironmentObject from './Classes/EnvironmentObject';
+import MidiController from './Classes/MidiContoller'
 
 
 class Controller {
@@ -12,6 +13,7 @@ class Controller {
   io = new Socket(this);
   store = new Store(this);
   envObject = new EnvironmentObject(this);
+  midiController = new MidiController(this,this.envObject)
 
   constructor() {
 
@@ -60,7 +62,9 @@ class Controller {
   }
 
   ChangeSpeed = (data) => {
+    console.log("Speed changed:",data.speed, this.store.rooms);
     Object.keys(this.store.rooms).map(roomID => {
+      
       this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
     });
   }
@@ -70,14 +74,15 @@ class Controller {
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetTriangleUser(roomID);
 
-      console.log(usersInRoom.length);
       if (usersInRoom.length >= 2) {
         var tris = this.envObject.CreateTriangle(usersInRoom);
         // tris.Triangles.forEach((triData, idx) => {
         //   console.log("trie frequ", idx, triData.Frequence);
         // });
 
+
         this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
+        this.io.io.sockets.in(roomID).emit("server-frequency-update", tris.Triangles[0].Frequence);
       }
 
 
