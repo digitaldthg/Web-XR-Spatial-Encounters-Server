@@ -18,6 +18,7 @@ class MidiController {
 
 
                 var input = WebMidi.getInputByName("nanoKONTROL2 SLIDER/KNOB");
+                if(!input){return;}
 
                 input.addListener('controlchange', "all",
                     (e) => {
