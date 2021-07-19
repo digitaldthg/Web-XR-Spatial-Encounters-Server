@@ -54,8 +54,8 @@ class EnvironmentObject {
         this.socket.on("client-change-scale", this.ChangeScale);
     }
     ChangeFrequency = (data) => {
-        console.log("Server Change Frequ:", data);
-        this.Frequence = Math.max(0.01, data.frequency);
+      
+      this.Frequence = Math.max(0.01, data.frequency);
     }
 
     ChangeScale = (data) => {
@@ -74,7 +74,6 @@ class EnvironmentObject {
         var lerpValue = 1 - (playerData.transform.position.y / playerData.transform.headHeight)
         var color = playerData.color;
 
-        console.log("playerDATA ", color, lerpValue)
         return {
             r: color.r + (1 - color.r) * lerpValue,
             g: color.g + (1 - color.g) * lerpValue,
@@ -135,83 +134,8 @@ class EnvironmentObject {
             this.data.Triangles[tri] = triangle;
 
         }
-        // this.data.Triangles.forEach((triData, idx) => {
-        //     console.log("data tris ", idx, triData.Frequence);
-        // });
-        return this.data;
-
-        /* for (int tri = 0; tri < numberTris; tri++) {
-             Vector3[] positions = new Vector3[Mathf.Min(players.Count,3) + 1];
-             Debug.Log("Positions " + positions.Length);
-             int posIdx = tri * 3;
-             Debug.Log("Start Idx: " + posIdx);
-     
-             if (posIdx + 3 > players.Count && tri >0 ) {
-                 posIdx += (players.Count - (posIdx + 3));
-             }
-             for (int i = 0; i < (positions.Length-1); i++) {
-                 Debug.Log("idx " + (tri+i)+" players "+players.Count);
-                 GameObject p = players[posIdx + i] as GameObject;
-                 positions[i] = p.transform.position;
-             }
-             GameObject lastPos = players[posIdx] as GameObject;
-             positions[positions.Length - 1] = lastPos.transform.position;
-             Vector3 midPoint = Vector3.zero;
-             for (int p = 0; p < positions.Length; p++) {
-                 midPoint += positions[p];
-             }
-             midPoint /= positions.Length;
-             for (int p = 0; p < positions.Length; p++)
-             {
-                 positions[p] = new Vector3(positions[p].x + (midPoint.x - positions[p].x) * (1-triangleScale), 0, positions[p].z + (midPoint.z - positions[p].z) * (1-triangleScale));
-             }
-             Color color = colors[tri % 3];
-             GameObject shape = Instantiate(linePrefab);
-             if (useGradient) {
-                 color = gradients[tri % 3].Evaluate((midPoint.x + 10) / 20);
-             }
-             shape.GetComponent<Shape>().CreateShape(positions,color);
-         }*/
-
-
-
-
-
-
-        //calculat triangle center
-        /*users.map((user) => {
-            midPoint.x += user.data.transform.position.x
-            midPoint.y += user.data.transform.position.y
-            midPoint.z += user.data.transform.position.z
-            return user.data.transform.position
-        })
-        console.log("Mid Points before ", midPoint)
-        console.log("User count ", Object.keys(users).length)
         
-        var userCount = Object.keys(users).length
-        midPoint.x *= 1/userCount;
-        midPoint.y *= 1/userCount;
-        midPoint.z *= 1/userCount;
-     
-        console.log("Mid Points ", midPoint)
-     
-        Object.assign(triangle, {
-            Positions: users.map((user) => {
-                var pos = user.data.transform.position;
-                //return { x: pos.x + (midPoint.x - pos.x)*this.Scale, y: pos.y + (midPoint.y - pos.y)*this.Scale, z: pos.z + (midPoint.z - pos.z)*this.Scale};
-                return { x: pos.x , y: pos.y , z: pos.z };
-            }),
-            Frequence: this.Frequence,
-            Color: {
-                r: Math.random(),
-                g: Math.random(),
-                b: Math.random(),
-                a: Math.random()
-            }
-        });
-        console.log("Create Tri:" ,triangle);
-     
-        this.data.Triangles.push(triangle);*/
+        return this.data;
 
     }
 }

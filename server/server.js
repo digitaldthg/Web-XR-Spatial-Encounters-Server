@@ -28,12 +28,12 @@ class Controller {
   }
 
   OnConnect = (socket) => {
-    console.log("connection from ", socket.id);
-
+   
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
     socket.on("client-change-speed", this.ChangeSpeed);
+    socket.on("client-player-explode", this.ExplodePlayer);
   }
 
   OnDisconnect = (socket) => {
@@ -60,6 +60,15 @@ class Controller {
     });
 
   }
+  ExplodePlayer = (data)=>{
+
+    console.log(data);
+    // this.io.io.sockets.in(roomID).emit("server-player-explode" , {
+    //   socket : this.io.io.sockets.id
+    // });
+
+  }
+
 
   ChangeSpeed = (data) => {
     console.log("Speed changed:",data.speed, this.store.rooms);
