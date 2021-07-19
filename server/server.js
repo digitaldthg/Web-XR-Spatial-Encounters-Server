@@ -69,6 +69,16 @@ class Controller {
 
   }
 
+  SendSingleTriangle = ()=>{
+    Object.keys(this.store.rooms).map(roomID => {
+      var usersInRoom = this.store.GetTriangleUser(roomID);
+      if (usersInRoom.length >= 2) {
+        var tris = this.envObject.CreateTriangle(usersInRoom);
+        this.io.io.sockets.in(roomID).emit("server-single-triangle-update", tris);
+      }
+    });
+  }
+
 
   ChangeSpeed = (data) => {
     console.log("Speed changed:",data.speed, this.store.rooms);
