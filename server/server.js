@@ -13,7 +13,7 @@ class Controller {
   io = new Socket(this);
   store = new Store(this);
   envObject = new EnvironmentObject(this);
-  midiController = new MidiController(this,this.envObject)
+  midiController = new MidiController(this, this.envObject)
 
   constructor() {
 
@@ -28,12 +28,13 @@ class Controller {
   }
 
   OnConnect = (socket) => {
-   
+
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
+    socket.on("client-theme-lerp", this.LerpTheme);
   }
 
   OnDisconnect = (socket) => {
@@ -60,7 +61,7 @@ class Controller {
     });
 
   }
-  ExplodePlayer = (data)=>{
+  ExplodePlayer = (data) => {
 
     console.log(data);
     // this.io.io.sockets.in(roomID).emit("server-player-explode" , {
@@ -69,7 +70,15 @@ class Controller {
 
   }
 
-  SendSingleTriangle = ()=>{
+  LerpTheme = (data) => {
+
+    Object.keys(this.store.rooms).map(roomID => {
+      this.io.io.sockets.in(roomID).emit("server-theme-lerp-update", data.alpha);
+    });
+
+  }
+
+  SendSingleTriangle = () => {
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetTriangleUser(roomID);
       if (usersInRoom.length >= 2) {
@@ -80,10 +89,11 @@ class Controller {
   }
 
 
+
   ChangeSpeed = (data) => {
-    console.log("Speed changed:",data.speed, this.store.rooms);
+    console.log("Speed changed:", data.speed, this.store.rooms);
     Object.keys(this.store.rooms).map(roomID => {
-      
+
       this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
     });
   }

@@ -26,6 +26,7 @@ class MidiController {
                         switch (e.controller.number) {
                             case 0: this.server.ChangeSpeed({ speed: Math.max(0.0001, e.value / 127) }); break;
                             case 1: this.envObj.ChangeFrequency({ frequency: (e.value / 127) * 3 }); break;
+                            case 2: this.envObj.LerpTheme({ alpha: (e.value / 127)}); break;
                             case 41: if (e.value == 127) {
                                 this.server.SendSingleTriangle();
                             } break;

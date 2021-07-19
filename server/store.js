@@ -51,9 +51,7 @@ class store{
     }
   }
   JoinRoom = (data) => {
-
     console.log("join Room ", data );
-
     if(this.rooms.hasOwnProperty(data.room) && this.context.io.sockets.hasOwnProperty(data.id)){
       this.context.io.sockets[data.id].join(data.room);
       this.rooms[data.room].users[data.id] = null;
