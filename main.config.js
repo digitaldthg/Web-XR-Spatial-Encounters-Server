@@ -1,5 +1,5 @@
 const config = {
-  IP : "https://192.168.86.236",
+  IP : "https://172.20.10.4",
   PORT : 3000
 }
 
