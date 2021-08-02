@@ -35,6 +35,7 @@ class Controller {
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
     socket.on("client-theme-lerp", this.LerpTheme);
+    socket.on("client-theme", this.ChangeTheme);
   }
 
   OnDisconnect = (socket) => {
@@ -76,6 +77,13 @@ class Controller {
       this.io.io.sockets.in(roomID).emit("server-theme-lerp-update", data.alpha);
     });
 
+  }
+
+  ChangeTheme = (data) =>{
+    console.log("OnChange Server ",data)
+    Object.keys(this.store.rooms).map(roomID => {
+      this.io.io.sockets.in(roomID).emit("server-theme-update", data.name);
+    });
   }
 
   SendSingleTriangle = () => {
