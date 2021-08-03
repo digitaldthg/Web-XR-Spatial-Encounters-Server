@@ -23,8 +23,8 @@ class Controller {
 
 
     //setInterval(this.Interval, 500);
-    setInterval(this.UserInterval, 500);
-    setInterval(this.SendEnvironment, 500);
+    setInterval(this.UserInterval, 200);
+    setInterval(this.SendEnvironment, 200);
   }
 
   OnConnect = (socket) => {

@@ -122,7 +122,11 @@ class EnvironmentObject {
             midPoint.z *= 1 / posCount;
 
             positions = positions.map((pos) => {
-                return { x: pos.x + (midPoint.x - pos.x) * this.Scale, y: pos.y + (midPoint.y - pos.y) * this.Scale, z: pos.z + (midPoint.z - pos.z) * this.Scale }
+                return { 
+                  x: pos.x + (midPoint.x - pos.x) * this.Scale, 
+                  y: pos.y + (midPoint.y - pos.y) * this.Scale, 
+                  z: pos.z + (midPoint.z - pos.z) * this.Scale 
+                }
             })
 
             Object.assign(triangle, {
