@@ -15,6 +15,9 @@ class Controller {
   envObject = new EnvironmentObject(this);
   midiController = new MidiController(this, this.envObject)
 
+  lastTheme = "Theme DunkelConcrete";
+  nextTheme = "Theme DunkelConcrete Morning";
+
   constructor() {
 
     this.events.addEventListener("connection", this.OnConnect);
@@ -31,6 +34,10 @@ class Controller {
 
     this.store.Connect(socket);
     this.envObject.Connect(socket);
+
+    console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
+    //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
+    this.io.io.emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
@@ -81,8 +88,11 @@ class Controller {
   }
 
   ChangeTheme = (data) =>{
+    console.log("DATA",data)
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets.in(roomID).emit("server-theme-update", data.name);
+      this.lastTheme = data.last;
+      this.nextTheme = data.next;
+      this.io.io.sockets.in(roomID).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
     });
   }
 
