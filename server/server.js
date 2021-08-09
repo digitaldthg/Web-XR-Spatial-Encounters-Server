@@ -78,9 +78,9 @@ class Controller {
   ExplodePlayer = (data) => {
 
     console.log(data);
-    // this.io.io.sockets.in(roomID).emit("server-player-explode" , {
-    //   socket : this.io.io.sockets.id
-    // });
+    Object.keys(this.store.rooms).map(roomID => {
+     this.io.io.sockets.in(roomID).emit("server-player-explode" ,data);
+    });
 
   }
 
