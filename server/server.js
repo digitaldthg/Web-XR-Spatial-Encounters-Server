@@ -36,6 +36,11 @@ class Controller {
     socket.on("client-player-explode", this.ExplodePlayer);
     socket.on("client-theme-lerp", this.LerpTheme);
     socket.on("client-theme", this.ChangeTheme);
+
+    socket.emit("test", {
+      message : "Hallo Lea"
+    });
+
   }
 
   OnDisconnect = (socket) => {
