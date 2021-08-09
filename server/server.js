@@ -17,6 +17,7 @@ class Controller {
 
   lastTheme = "Theme DunkelConcrete";
   nextTheme = "Theme DunkelConcrete Morning";
+  lerpAlpha = 0;
 
   constructor() {
 
@@ -37,7 +38,7 @@ class Controller {
 
     console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    this.io.io.emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
+    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, lerpAlpha: this.lerpAlpha});
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
@@ -87,6 +88,7 @@ class Controller {
 
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-theme-lerp-update", data.alpha);
+      this.lerpAlpha = data.alpha
     });
 
   }
