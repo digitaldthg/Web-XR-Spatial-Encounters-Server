@@ -21,6 +21,18 @@ class store{
     socket.on("create-room", this.CreateRoom);
     socket.on("join-room", this.JoinRoom);
     socket.on("leave-room", this.LeaveRoom);
+
+    socket.on("client-delete-friend", (d)=>{
+      console.log(d.friend);
+      console.log(d.room);
+      console.log(this.rooms[d.room].users);
+      console.log(this.rooms[d.room].users[d.friend.id]);
+
+      this.LeaveRoom({
+        id: d.friend.id,
+        room : d.room
+      })
+    })
   }
 
   CreateRoom = (data) => {
@@ -82,7 +94,7 @@ class store{
     }else{
       console.log("room didnt exist");
     }
-
+    
     this.context.events.dispatchEvent("disconnect", data);
   }
 
@@ -104,17 +116,28 @@ class store{
   Connect = (socket) =>{
     
     this.users[socket.id] = new User(socket);
-
+    //console.log("connect from Connect store.js", socket);
     this.BindControls(socket);
   }
 
 
-  Disconnect(socket){
-
+  Disconnect = (socket) => {
+    
+    var socketID = socket.id;
+    console.log("disconnect socket", socket.id, socketID);
+    
+    Object.keys(this.rooms).map(roomID => Object.keys(this.rooms[roomID].users).map(userID => {
+      
+      console.log(userID, socket.id, userID == socket.id);
+      if( socket.id == userID){
+        console.log("delete user in room");
+        delete this.rooms[roomID].users[userID];
+      }
+    }));
+    
     delete this.users[socket.id];
-
     this.context.io.io.emit("server-friends-delete", {
-      id : socket.id
+      id : socketID
     });
   }
 
