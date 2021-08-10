@@ -23,16 +23,15 @@ class store{
     socket.on("leave-room", this.LeaveRoom);
 
     socket.on("client-delete-friend", (d)=>{
-      console.log(d.friend);
-      console.log(d.room);
-      console.log(this.rooms[d.room].users);
-      console.log(this.rooms[d.room].users[d.friend.id]);
-
       this.LeaveRoom({
         id: d.friend.id,
         room : d.room
       })
-    })
+    });
+    
+    socket.on("client-hide-friend", this.HideFriend);
+
+
   }
 
   CreateRoom = (data) => {
@@ -98,6 +97,12 @@ class store{
     this.context.events.dispatchEvent("disconnect", data);
   }
 
+  HideFriend = (d) => {
+    if(this.rooms.hasOwnProperty(d.room)){
+      this.users[d.friend.id].data.visible = d.visible;
+    }
+  } 
+
   GetUsersInRoom(roomID){
     var usersInRoom = {}
     if(this.rooms.hasOwnProperty(roomID)){
@@ -152,6 +157,7 @@ class store{
     if(Object.keys(this.users).length == 0){return []}
 
     var users = Object.keys(this.rooms[roomID].users).map(userID => this.users[userID]);
+    users = users.filter(u => u.data.visible);
     return users;
   }
 

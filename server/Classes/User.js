@@ -16,12 +16,10 @@ class User{
   }
 
   Update = (data) =>{  
-
     Object.assign(this.data, {
       transform : data.transform,
       color : data.color,
-    });
-  
+    });  
   }
 
   GetUser(){

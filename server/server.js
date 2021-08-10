@@ -77,7 +77,6 @@ class Controller {
   }
   ExplodePlayer = (data) => {
 
-    console.log(data);
     Object.keys(this.store.rooms).map(roomID => {
      this.io.io.sockets.in(roomID).emit("server-player-explode" ,data);
     });
@@ -94,7 +93,7 @@ class Controller {
   }
 
   ChangeTheme = (data) =>{
-    console.log("DATA",data)
+    
     Object.keys(this.store.rooms).map(roomID => {
       this.lastTheme = data.last;
       this.nextTheme = data.next;
@@ -147,25 +146,7 @@ class Controller {
           Triangles : []
         });
       }
-
-
-
-      //this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
-
     });
-
-
-
-    // var users = this.store.GetTriangleUser();
-
-    // if (users.length >= 2) {
-    //   var tris = this.envObject.CreateTriangle(users);
-    //   tris.Triangles.forEach((triData, idx) => {
-    //     console.log("trie frequ", idx, triData.Frequence);
-    //   });
-
-    //   this.io.io.emit("server-environment-update", tris);
-    // }
 
   }
 

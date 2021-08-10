@@ -3,6 +3,7 @@ const UserData = (data = {})=>{
     var userObj = {
         id : null,
         role : 0,
+        visible : true,
         transform : {
           headHeight : 1.75,
           position : { 
