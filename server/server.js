@@ -22,7 +22,7 @@ class Controller {
   constructor() {
 
     this.events.addEventListener("connection", this.OnConnect);
-    this.events.addEventListener("disconnect", this.OnDisconnect);
+    this.events.addEventListener("disconnect", this.store.Disconnect);
 
 
 
@@ -51,17 +51,17 @@ class Controller {
     socket.on("client-change-fog", this.ChangeFog);
   }
 
-  OnDisconnect = (socket) => {
-    console.log("disconnect from ", socket.id);
+  // OnDisconnect = (socket) => {
+  //   console.log("disconnect from ", socket.id);
 
-    Object.values(this.store.rooms).map(room => {
-      if (room.users.hasOwnProperty(socket.id)) {
-        delete room.users[socket.id];
-      }
-    });
+  //   Object.values(this.store.rooms).map(room => {
+  //     if (room.users.hasOwnProperty(socket.id)) {
+  //       delete room.users[socket.id];
+  //     }
+  //   });
 
-    this.store.Disconnect(socket);
-  }
+  //   this.store.Disconnect(socket);
+  // }
 
   UserInterval = () => {
     var users = {};
@@ -142,6 +142,10 @@ class Controller {
 
         this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
         this.io.io.sockets.in(roomID).emit("server-frequency-update", tris.Triangles[0].Frequence);
+      }else{
+        this.io.io.sockets.in(roomID).emit("server-environment-update", {
+          Triangles : []
+        });
       }
 
 

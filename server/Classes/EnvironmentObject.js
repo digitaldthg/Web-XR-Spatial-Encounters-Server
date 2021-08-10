@@ -90,8 +90,8 @@ class EnvironmentObject {
 
         var numberTris = Math.ceil(users.length / 3);
 
-        //console.log("Player Count ßßß " , users.length);
-        //console.log("Triangles " , numberTris);
+        // console.log("Player Count ßßß " , users.length);
+        // console.log("Triangles " , numberTris);
 
         for (var tri = 0; tri < numberTris; tri++) {
             var triangle = Object.assign({}, TriangleDataObject);
