@@ -18,6 +18,9 @@ class Controller {
   lastTheme = "Theme DunkelConcrete";
   nextTheme = "Theme DunkelConcrete Morning";
   lerpAlpha = 0;
+  fog = 0;
+  speed = 0.1;
+  frequency = 3;
 
   constructor() {
 
@@ -38,17 +41,13 @@ class Controller {
 
     console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, lerpAlpha: this.lerpAlpha});
+    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, lerpAlpha: this.lerpAlpha, fog:this.fog,speed: this.speed});
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
     socket.on("client-theme-lerp", this.LerpTheme);
-    socket.on("client-theme", this.ChangeTheme);
-    socket.emit("test", {
-      message : "Hallo Lea"
-    });
-
     socket.on("client-change-fog", this.ChangeFog);
+    socket.on("client-gamepad-event",this.SendSingleTriangle)
   }
 
   OnDisconnect = (socket) => {
@@ -87,28 +86,24 @@ class Controller {
   LerpTheme = (data) => {
 
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets.in(roomID).emit("server-theme-lerp-update", data.alpha);
+      this.io.io.sockets.in(roomID).emit("server-theme-lerp-update", data);
       this.lerpAlpha = data.alpha
+      this.lastTheme = data.last
+      this.nextTheme = data.next
     });
 
   }
 
-  ChangeTheme = (data) =>{
-    console.log("DATA",data)
-    Object.keys(this.store.rooms).map(roomID => {
-      this.lastTheme = data.last;
-      this.nextTheme = data.next;
-      this.io.io.sockets.in(roomID).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    });
-  }
 
   ChangeFog = (data)=>{
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-fog-update", data.fog);
+      this.fog = data.fog
     });
   }
 
   SendSingleTriangle = () => {
+    console.log("SEND SINGLE")
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetTriangleUser(roomID);
       if (usersInRoom.length >= 2) {
@@ -123,8 +118,8 @@ class Controller {
   ChangeSpeed = (data) => {
     console.log("Speed changed:", data.speed, this.store.rooms);
     Object.keys(this.store.rooms).map(roomID => {
-
       this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
+      this.speed = data.speed
     });
   }
 
@@ -134,14 +129,15 @@ class Controller {
       var usersInRoom = this.store.GetTriangleUser(roomID);
 
       if (usersInRoom.length >= 2) {
+        
         var tris = this.envObject.CreateTriangle(usersInRoom);
         // tris.Triangles.forEach((triData, idx) => {
         //   console.log("trie frequ", idx, triData.Frequence);
         // });
-
-
         this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
         this.io.io.sockets.in(roomID).emit("server-frequency-update", tris.Triangles[0].Frequence);
+        this.frequency = tris.Triangles[0].Frequence;
+
       }
 
 
