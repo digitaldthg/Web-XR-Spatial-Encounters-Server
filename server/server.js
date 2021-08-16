@@ -41,7 +41,7 @@ class Controller {
 
     console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, lerpAlpha: this.lerpAlpha, fog:this.fog,speed: this.speed});
+    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, duration:this.duration, fog:this.fog,speed: this.speed});
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);

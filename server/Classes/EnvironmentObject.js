@@ -1,4 +1,7 @@
 import e from "express";
+import {
+    Vector3
+} from "three";
 
 var TriangleDataObject = {
     Positions: [
@@ -54,8 +57,8 @@ class EnvironmentObject {
         this.socket.on("client-change-scale", this.ChangeScale);
     }
     ChangeFrequency = (data) => {
-      
-      this.Frequence = Math.max(0.01, data.frequency);
+
+        this.Frequence = Math.max(0.01, data.frequency);
     }
 
     ChangeScale = (data) => {
@@ -71,14 +74,14 @@ class EnvironmentObject {
     }
 
     GetColor = (playerData) => {
-        var lerpValue = 1 - (playerData.transform.position.y / playerData.transform.headHeight)
+        var lerpValue = 1 - (playerData.transform.headPosition.y / playerData.transform.headHeight)
         var color = playerData.color;
 
         return {
             r: color.r + (1 - color.r) * lerpValue,
             g: color.g + (1 - color.g) * lerpValue,
             b: color.b + (1 - color.b) * lerpValue,
-            a:1
+            a: 1
         }
     }
 
@@ -88,26 +91,21 @@ class EnvironmentObject {
 
         var midPoint = { x: 0, y: 0, z: 0 };
 
-        var numberTris = Math.ceil(users.length / 3);
+        var numberTris = Math.floor((users.length + 1) / 3);
 
-        // console.log("Player Count ßßß " , users.length);
-        // console.log("Triangles " , numberTris);
 
         for (var tri = 0; tri < numberTris; tri++) {
             var triangle = Object.assign({}, TriangleDataObject);
             var colorList = [];
-            //console.log("----Init Tri ", tri, this.data.Triangles.length);
-            var posCount = Math.min(users.length, 3) //2 or 3
+
+            var posCount = Math.min(users.length - tri * 3, 3) //1,2 or 3
             var positions = [];
             var posIdx = tri * 3; //0, 3, 6
 
-            if (posIdx + 3 > users.length && tri > 0) {
-                posIdx += (users.length - (posIdx + 3));
-            }
             for (var i = 0; i < (posCount); i++) {
                 positions[i] = users[posIdx + i].data.transform.position;
                 colorList[i] = this.GetColor(users[posIdx + i].data);
-                //console.log("PLAYER ",users[posIdx + i].data)
+                console.log("PLAYER COLOR ",colorList)
             }
 
             positions.map((p) => {
@@ -121,11 +119,16 @@ class EnvironmentObject {
             midPoint.y *= 1 / posCount;
             midPoint.z *= 1 / posCount;
 
+
+
+console.log("SCALE ",this.Scale)
             positions = positions.map((pos) => {
-                return { 
-                  x: pos.x + (midPoint.x - pos.x) * this.Scale, 
-                  y: pos.y + (midPoint.y - pos.y) * this.Scale, 
-                  z: pos.z + (midPoint.z - pos.z) * this.Scale 
+                var direction = new Vector3(midPoint.x - pos.x, midPoint.y - pos.y, midPoint.z - pos.z);
+                direction.normalize();
+                return {
+                    x: pos.x + direction.x * this.Scale,
+                    y: pos.y + direction.y * this.Scale,
+                    z: pos.z + direction.z * this.Scale
                 }
             })
 
@@ -138,7 +141,7 @@ class EnvironmentObject {
             this.data.Triangles[tri] = triangle;
 
         }
-        
+
         return this.data;
 
     }

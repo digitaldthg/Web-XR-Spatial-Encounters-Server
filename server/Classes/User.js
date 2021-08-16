@@ -15,7 +15,8 @@ class User{
 
   }
 
-  Update = (data) =>{  
+  Update = (data) =>{ 
+
     Object.assign(this.data, {
       transform : data.transform,
       color : data.color,
@@ -23,7 +24,6 @@ class User{
   }
 
   GetUser(){
-    
     var userData = Object.assign({}, this.data);
 
     return userData;

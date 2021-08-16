@@ -13,6 +13,7 @@
     "express": "^4.17.1",
     "socket.io": "^1.5.0",
     "socket.io-client": "^3.1.1",
+    "three": "^0.131.3",
     "web-midi-api": "^2.1.1",
     "webmidi": "^2.5.2"
   },
