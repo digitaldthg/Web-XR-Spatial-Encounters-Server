@@ -105,7 +105,6 @@ class EnvironmentObject {
             for (var i = 0; i < (posCount); i++) {
                 positions[i] = users[posIdx + i].data.transform.position;
                 colorList[i] = this.GetColor(users[posIdx + i].data);
-                console.log("PLAYER COLOR ",colorList)
             }
 
             positions.map((p) => {
