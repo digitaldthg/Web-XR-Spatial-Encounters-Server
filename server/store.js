@@ -42,7 +42,7 @@ class store{
       this.rooms[data.room] = { users : {}};
       this.rooms[data.room].users[data.id] = null;
       
-      //console.log(this.context.io.sockets[data.id]);
+      console.log("data id und socket ",data, data.id, this.context.io.sockets[data.id]);
 
       this.context.io.sockets[data.id].join(data.room);
 

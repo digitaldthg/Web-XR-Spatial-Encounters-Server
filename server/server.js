@@ -17,7 +17,7 @@ class Controller {
 
   lastTheme = "Theme DunkelConcrete";
   nextTheme = "Theme DunkelConcrete Morning";
-  lerpAlpha = 0;
+  duration = 1;
   fog = 0;
   speed = 0.1;
   frequency = 3;
@@ -45,7 +45,7 @@ class Controller {
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
-    socket.on("client-theme-lerp", this.LerpTheme);
+    socket.on("client-theme-lerp", this.StartLerpTheme);
     socket.on("client-change-fog", this.ChangeFog);
     socket.on("client-gamepad-event",this.SendSingleTriangle)
   }
@@ -83,11 +83,11 @@ class Controller {
 
   }
 
-  LerpTheme = (data) => {
+  StartLerpTheme = (data) => {
 
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets.in(roomID).emit("server-theme-lerp-update", data);
-      this.lerpAlpha = data.alpha
+      this.io.io.sockets.in(roomID).emit("server-theme-lerp", data);
+      this.duration = data.duration
       this.lastTheme = data.last
       this.nextTheme = data.next
     });
