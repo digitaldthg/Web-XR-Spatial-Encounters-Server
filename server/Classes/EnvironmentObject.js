@@ -40,7 +40,7 @@ colors[2] = {
 
 class EnvironmentObject {
     Frequence = 1;
-    Scale = 0.5;
+    Scale = 1.25;
     Speed = 0.1;
     data = {
         Triangles: []
@@ -118,9 +118,6 @@ class EnvironmentObject {
             midPoint.y *= 1 / posCount;
             midPoint.z *= 1 / posCount;
 
-
-
-console.log("SCALE ",this.Scale)
             positions = positions.map((pos) => {
                 var direction = new Vector3(midPoint.x - pos.x, midPoint.y - pos.y, midPoint.z - pos.z);
                 direction.normalize();
