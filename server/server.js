@@ -39,7 +39,7 @@ class Controller {
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
-    console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
+   // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
     socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, duration:this.duration, fog:this.fog,speed: this.speed});
 
@@ -48,6 +48,7 @@ class Controller {
     socket.on("client-theme-lerp", this.StartLerpTheme);
     socket.on("client-change-fog", this.ChangeFog);
     socket.on("client-gamepad-event",this.SendSingleTriangle)
+    socket.on("client-animate-fog",this.SendFogAnimation)
   }
 
   // OnDisconnect = (socket) => {
@@ -61,6 +62,19 @@ class Controller {
 
   //   this.store.Disconnect(socket);
   // }
+
+  SendFogAnimation = (data) =>{
+
+    console.log(data);
+
+    Object.keys(this.store.rooms).map(roomID => {
+
+      this.io.io.sockets.in(roomID).emit("server-fog-animate", data);
+    
+    });
+
+
+  }
 
   UserInterval = () => {
     var users = {};
@@ -76,7 +90,7 @@ class Controller {
   }
   ExplodePlayer = (data) => {
 
-    console.log(data);
+    //console.log(data);
     Object.keys(this.store.rooms).map(roomID => {
      this.io.io.sockets.in(roomID).emit("server-player-explode" ,data);
     });
@@ -103,7 +117,7 @@ class Controller {
   }
 
   SendSingleTriangle = () => {
-    console.log("SEND SINGLE")
+   // console.log("SEND SINGLE")
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetTriangleUser(roomID);
       if (usersInRoom.length >= 2) {
@@ -116,7 +130,7 @@ class Controller {
 
 
   ChangeSpeed = (data) => {
-    console.log("Speed changed:", data.speed, this.store.rooms);
+   // console.log("Speed changed:", data.speed, this.store.rooms);
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
       this.speed = data.speed
