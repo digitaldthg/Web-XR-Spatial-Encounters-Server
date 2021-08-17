@@ -15,10 +15,10 @@ class Controller {
   envObject = new EnvironmentObject(this);
   midiController = new MidiController(this, this.envObject)
 
-  lastTheme = "Theme DunkelConcrete";
-  nextTheme = "Theme DunkelConcrete Morning";
+  lastTheme = "Dunkel Concrete";
+  nextTheme = "Dunkel Concrete";
   duration = 1;
-  fog = 0;
+  fog = 0.2;
   speed = 0.1;
   frequency = 3;
 
