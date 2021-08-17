@@ -20,6 +20,7 @@ class Controller {
   fog = 0.2;
   speed = 0.1;
   frequency = 3;
+  opacity = 0.0;
 
   constructor() {
 
@@ -37,7 +38,7 @@ class Controller {
 
    // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, duration:this.duration, fog:this.fog,speed: this.speed});
+    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, duration:this.duration, fog:this.fog,speed: this.speed, opacity:this.opacity});
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
@@ -45,6 +46,7 @@ class Controller {
     socket.on("client-change-fog", this.ChangeFog);
     socket.on("client-gamepad-event",this.SendSingleTriangle)
     socket.on("client-animate-fog",this.SendFogAnimation)
+    socket.on("client-change-opacity",this.ChangeOpacity)
   }
 
   SendFogAnimation = (data) =>{
@@ -95,6 +97,12 @@ class Controller {
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-fog-update", data.fog);
       this.fog = data.fog
+    });
+  }
+  ChangeOpacity = (data)=>{
+    Object.keys(this.store.rooms).map(roomID => {
+      this.io.io.sockets.in(roomID).emit("server-opacity-update", data.opacity);
+      this.opacity = data.opacity
     });
   }
 
