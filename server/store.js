@@ -1,5 +1,7 @@
 import User from './Classes/User';
 
+const fs = require("fs");
+
 
 class store{
   friends = {};
@@ -7,6 +9,9 @@ class store{
   socket =  null;
   users = {};
   timeOffset = 1;
+  IsRecording = false;
+  RecordName = "MyCustomRecording";
+  RecordData = [];
 
   constructor(context) {
     this.context = context;
@@ -22,6 +27,9 @@ class store{
     socket.on("join-room", this.JoinRoom);
     socket.on("leave-room", this.LeaveRoom);
 
+    socket.on("client-record" , this.Record);
+
+
     socket.on("client-delete-friend", (d)=>{
       this.LeaveRoom({
         id: d.friend.id,
@@ -30,13 +38,41 @@ class store{
     });
     
     socket.on("client-hide-friend", this.HideFriend);
+  }
 
+  Record = (data) => {
+    if(this.IsRecording && data.Record){ console.log("already Recording"); }
+    
+    if(this.IsRecording && !data.Record){
+      this.SaveRecording();
+    }
 
+    this.IsRecording = data.Record;
+    if(data.hasOwnProperty("RecordName")){
+      this.RecordName = data.RecordName;
+    }
+  }
+
+  AddRecordData(data){
+    this.RecordData.push(data);
+  }
+
+  SaveRecording(){
+    var fileName = `${this.RecordName}_${Date.now()}.json`;
+    fs.writeFile(`./records/${fileName}`, JSON.stringify(this.RecordData), err => {
+      if (err) {
+        console.error(err)
+        return;
+      }
+      //file written successfully
+
+      console.log("saved file at" , fileName );
+    });
+
+    this.RecordData = [];
   }
 
   CreateRoom = (data) => {
-
-
     if(!this.rooms.hasOwnProperty(data.room)){
 
       this.rooms[data.room] = { users : {}};

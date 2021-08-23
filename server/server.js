@@ -7,7 +7,6 @@ import { Events } from './Classes/Events';
 import EnvironmentObject from './Classes/EnvironmentObject';
 import MidiController from './Classes/MidiContoller'
 
-
 class Controller {
   events = new Events();
   io = new Socket(this);
@@ -27,9 +26,6 @@ class Controller {
 
     this.events.addEventListener("connection", this.OnConnect);
     this.events.addEventListener("disconnect", this.store.Disconnect);
-
-
-
     //setInterval(this.Interval, 500);
     setInterval(this.UserInterval, 200);
     setInterval(this.SendEnvironment, 200);
@@ -53,6 +49,7 @@ class Controller {
     socket.on("client-change-opacity", this.ChangeOpacity)
   }
 
+<<<<<<< HEAD
   // OnDisconnect = (socket) => {
   //   console.log("disconnect from ", socket.id);
 
@@ -66,6 +63,9 @@ class Controller {
   // }
 
   SendFogAnimation = (data) => {
+=======
+  SendFogAnimation = (data) =>{
+>>>>>>> 70c0ad8259a2bf0e66df662a0d5da161924852c3
 
     console.log(data);
 
@@ -74,8 +74,6 @@ class Controller {
       this.io.io.sockets.in(roomID).emit("server-fog-animate", data);
       this.fog = 0.0;
     });
-
-
   }
 
   UserInterval = () => {
@@ -130,7 +128,17 @@ class Controller {
       var usersInRoom = this.store.GetTriangleUser(roomID);
       if (usersInRoom.length >= 2) {
         var tris = this.envObject.CreateTriangle(usersInRoom);
+
         this.io.io.sockets.in(roomID).emit("server-single-triangle-update", tris);
+
+        if(this.store.IsRecording){
+          
+          this.store.AddRecordData(this.GenerateTimeStamp({
+            singleTriangle : tris
+          }));
+        }
+
+
       }
     });
   }
@@ -144,7 +152,18 @@ class Controller {
       this.speed = data.speed
     });
   }
-
+  GenerateTimeStamp = (data) =>{
+    return Object.assign({
+      time : Date.now(),
+      tris : [],
+      frequency : this.frequency,
+      fog: this.fog,
+      speed : this.speed,
+      nextTheme : this.nextTheme,
+      lastTheme : this.lastTheme,
+      singleTriangle : null
+    },data);
+  } 
   SendEnvironment = () => {
 
     Object.keys(this.store.rooms).map(roomID => {
@@ -153,39 +172,38 @@ class Controller {
       if (usersInRoom.length >= 2) {
 
         var tris = this.envObject.CreateTriangle(usersInRoom);
-        // tris.Triangles.forEach((triData, idx) => {
-        //   console.log("trie frequ", idx, triData.Frequence);
-        // });
+        
         this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
         this.io.io.sockets.in(roomID).emit("server-frequency-update", tris.Triangles[0].Frequence);
 
         this.frequency = tris.Triangles[0].Frequence;
 
+<<<<<<< HEAD
       } else {
+=======
+
+        if(this.store.IsRecording){
+          
+          this.store.AddRecordData(this.GenerateTimeStamp({
+            tris : tris
+          }));
+        }
+
+
+      }else{
+>>>>>>> 70c0ad8259a2bf0e66df662a0d5da161924852c3
         this.io.io.sockets.in(roomID).emit("server-environment-update", {
           Triangles: []
         });
+
+        if(this.store.IsRecording){
+          this.store.AddRecordData(this.GenerateTimeStamp({
+            tris : []
+          }));
+          
+        }
       }
-
-
-
-      //this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
-
     });
-
-
-
-    // var users = this.store.GetTriangleUser();
-
-    // if (users.length >= 2) {
-    //   var tris = this.envObject.CreateTriangle(users);
-    //   tris.Triangles.forEach((triData, idx) => {
-    //     console.log("trie frequ", idx, triData.Frequence);
-    //   });
-
-    //   this.io.io.emit("server-environment-update", tris);
-    // }
-
   }
 
 
