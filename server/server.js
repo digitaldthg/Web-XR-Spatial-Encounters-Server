@@ -40,17 +40,17 @@ class Controller {
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
-   // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
+    // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", {next: this.nextTheme, last:this.lastTheme, duration:this.duration, fog:this.fog,speed: this.speed, opacity:this.opacity});
+    socket.emit("connectResponse", { next: this.nextTheme, last: this.lastTheme, duration: this.duration, fog: this.fog, speed: this.speed, opacity: this.opacity });
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
     socket.on("client-theme-lerp", this.StartLerpTheme);
     socket.on("client-change-fog", this.ChangeFog);
-    socket.on("client-gamepad-event",this.SendSingleTriangle)
-    socket.on("client-animate-fog",this.SendFogAnimation)
-    socket.on("client-change-opacity",this.ChangeOpacity)
+    socket.on("client-gamepad-event", this.SendSingleTriangle)
+    socket.on("client-animate-fog", this.SendFogAnimation)
+    socket.on("client-change-opacity", this.ChangeOpacity)
   }
 
   // OnDisconnect = (socket) => {
@@ -65,14 +65,14 @@ class Controller {
   //   this.store.Disconnect(socket);
   // }
 
-  SendFogAnimation = (data) =>{
+  SendFogAnimation = (data) => {
 
     console.log(data);
 
     Object.keys(this.store.rooms).map(roomID => {
 
       this.io.io.sockets.in(roomID).emit("server-fog-animate", data);
-    
+      this.fog = 0.0;
     });
 
 
@@ -94,7 +94,7 @@ class Controller {
 
     //console.log(data);
     Object.keys(this.store.rooms).map(roomID => {
-     this.io.io.sockets.in(roomID).emit("server-player-explode" ,data);
+      this.io.io.sockets.in(roomID).emit("server-player-explode", data);
     });
 
   }
@@ -111,13 +111,13 @@ class Controller {
   }
 
 
-  ChangeFog = (data)=>{
+  ChangeFog = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-fog-update", data.fog);
       this.fog = data.fog
     });
   }
-  ChangeOpacity = (data)=>{
+  ChangeOpacity = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-opacity-update", data.opacity);
       this.opacity = data.opacity
@@ -125,7 +125,7 @@ class Controller {
   }
 
   SendSingleTriangle = () => {
-   // console.log("SEND SINGLE")
+    // console.log("SEND SINGLE")
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetTriangleUser(roomID);
       if (usersInRoom.length >= 2) {
@@ -138,7 +138,7 @@ class Controller {
 
 
   ChangeSpeed = (data) => {
-   // console.log("Speed changed:", data.speed, this.store.rooms);
+    // console.log("Speed changed:", data.speed, this.store.rooms);
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
       this.speed = data.speed
@@ -151,7 +151,7 @@ class Controller {
       var usersInRoom = this.store.GetTriangleUser(roomID);
 
       if (usersInRoom.length >= 2) {
-        
+
         var tris = this.envObject.CreateTriangle(usersInRoom);
         // tris.Triangles.forEach((triData, idx) => {
         //   console.log("trie frequ", idx, triData.Frequence);
@@ -161,9 +161,9 @@ class Controller {
 
         this.frequency = tris.Triangles[0].Frequence;
 
-      }else{
+      } else {
         this.io.io.sockets.in(roomID).emit("server-environment-update", {
-          Triangles : []
+          Triangles: []
         });
       }
 
