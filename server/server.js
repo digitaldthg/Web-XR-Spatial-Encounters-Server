@@ -49,25 +49,7 @@ class Controller {
     socket.on("client-change-opacity", this.ChangeOpacity)
   }
 
-<<<<<<< HEAD
-  // OnDisconnect = (socket) => {
-  //   console.log("disconnect from ", socket.id);
-
-  //   Object.values(this.store.rooms).map(room => {
-  //     if (room.users.hasOwnProperty(socket.id)) {
-  //       delete room.users[socket.id];
-  //     }
-  //   });
-
-  //   this.store.Disconnect(socket);
-  // }
-
-  SendFogAnimation = (data) => {
-=======
   SendFogAnimation = (data) =>{
->>>>>>> 70c0ad8259a2bf0e66df662a0d5da161924852c3
-
-    console.log(data);
 
     Object.keys(this.store.rooms).map(roomID => {
 
@@ -178,9 +160,6 @@ class Controller {
 
         this.frequency = tris.Triangles[0].Frequence;
 
-<<<<<<< HEAD
-      } else {
-=======
 
         if(this.store.IsRecording){
           
@@ -191,7 +170,6 @@ class Controller {
 
 
       }else{
->>>>>>> 70c0ad8259a2bf0e66df662a0d5da161924852c3
         this.io.io.sockets.in(roomID).emit("server-environment-update", {
           Triangles: []
         });
