@@ -38,7 +38,7 @@ class Controller {
 
     // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", { next: this.nextTheme, last: this.lastTheme, duration: this.duration, fog: this.fog, speed: this.speed, opacity: this.opacity });
+    socket.emit("connectResponse", { next: this.nextTheme, last: this.lastTheme, duration: this.duration, fog: this.fog, speed: this.speed, opacity: this.opacity, frequency: this.frequency });
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
@@ -47,9 +47,10 @@ class Controller {
     socket.on("client-gamepad-event", this.SendSingleTriangle)
     socket.on("client-animate-fog", this.SendFogAnimation)
     socket.on("client-change-opacity", this.ChangeOpacity)
+    socket.on("client-change-frequency", this.ChangeFrequency);
   }
 
-  SendFogAnimation = (data) =>{
+  SendFogAnimation = (data) => {
 
     Object.keys(this.store.rooms).map(roomID => {
 
@@ -113,10 +114,10 @@ class Controller {
 
         this.io.io.sockets.in(roomID).emit("server-single-triangle-update", tris);
 
-        if(this.store.IsRecording){
-          
+        if (this.store.IsRecording) {
+
           this.store.AddRecordData(this.GenerateTimeStamp({
-            singleTriangle : tris
+            singleTriangle: tris
           }));
         }
 
@@ -124,28 +125,33 @@ class Controller {
       }
     });
   }
-
-
+  
+  ChangeFrequency = (data) => {
+    console.log("FREQU ",data.frequency)
+      this.io.io.sockets.emit("server-frequency-update", data.frequency);
+      this.frequency = data.frequency;  
+  }
 
   ChangeSpeed = (data) => {
-    // console.log("Speed changed:", data.speed, this.store.rooms);
-    Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets.in(roomID).emit("server-speed-update", data.speed);
-      this.speed = data.speed
-    });
+    this.io.io.sockets.emit("server-speed-update", data.speed);
+    this.speed = data.speed;
+
   }
-  GenerateTimeStamp = (data) =>{
+
+  GenerateTimeStamp = (data) => {
     return Object.assign({
-      time : Date.now(),
-      tris : [],
-      frequency : this.frequency,
+      time: Date.now(),
+      tris: [],
+      frequency: this.frequency,
       fog: this.fog,
-      speed : this.speed,
-      nextTheme : this.nextTheme,
-      lastTheme : this.lastTheme,
-      singleTriangle : null
-    },data);
-  } 
+      speed: this.speed,
+      nextTheme: this.nextTheme,
+      lastTheme: this.lastTheme,
+      singleTriangle: null
+    }, data);
+  }
+
+
   SendEnvironment = () => {
 
     Object.keys(this.store.rooms).map(roomID => {
@@ -154,31 +160,28 @@ class Controller {
       if (usersInRoom.length >= 2) {
 
         var tris = this.envObject.CreateTriangle(usersInRoom);
-        
+
         this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
-        this.io.io.sockets.in(roomID).emit("server-frequency-update", tris.Triangles[0].Frequence);
-
-        this.frequency = tris.Triangles[0].Frequence;
 
 
-        if(this.store.IsRecording){
-          
+        if (this.store.IsRecording) {
+
           this.store.AddRecordData(this.GenerateTimeStamp({
-            tris : tris
+            tris: tris
           }));
         }
 
 
-      }else{
+      } else {
         this.io.io.sockets.in(roomID).emit("server-environment-update", {
           Triangles: []
         });
 
-        if(this.store.IsRecording){
+        if (this.store.IsRecording) {
           this.store.AddRecordData(this.GenerateTimeStamp({
-            tris : []
+            tris: []
           }));
-          
+
         }
       }
     });

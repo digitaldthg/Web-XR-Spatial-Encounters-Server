@@ -23,12 +23,23 @@ class MidiController {
 
                 input.addListener('controlchange', "all",
                     (e) => {
-                        console.log(e);
+                        //console.log(e);
                         switch (e.controller.number) {
-                            case 0: this.server.ChangeSpeed({ speed: Math.max(0.0001, e.value / 127) }); break;
-                            case 1: this.envObj.ChangeFrequency({ frequency: (e.value / 127) * 3 }); break;
-                            case 2: this.envObj.LerpTheme({ alpha: (e.value / 127) }); break;
-                            case 41: if (e.value == 127) {
+                            case 0:
+                            this.server.ChangeSpeed({ speed: Math.max(0.0001, e.value / 127) }); break;
+                            case 1:
+                            var frequ = { frequency: (e.value / 127) * 3 }; 
+                            this.server.ChangeFrequency(frequ);
+                            break;
+                            case 2:
+                            var op= { opacity: (e.value / 127)}; 
+                            this.server.ChangeOpacity(op);
+                            break;
+                            case 3:
+                            var fog = { fog: (e.value / 127)}; 
+                            this.server.ChangeFog(fog);
+                            break;
+                            case 41:console.log("Single"); if (e.value == 127) {
                                 this.server.SendSingleTriangle();
                             } break;
                             default: break;

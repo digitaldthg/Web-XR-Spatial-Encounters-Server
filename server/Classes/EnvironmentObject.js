@@ -15,7 +15,6 @@ var TriangleDataObject = {
         b: 0,
         a: 0
     },
-    Frequence: 1
 }
 
 var colors = [];
@@ -39,9 +38,7 @@ colors[2] = {
 }
 
 class EnvironmentObject {
-    Frequence = 1;
     Scale = 1.25;
-    Speed = 0.1;
     data = {
         Triangles: []
     }
@@ -53,12 +50,8 @@ class EnvironmentObject {
     Connect = (socket) => {
         this.socket = socket;
 
-        this.socket.on("client-change-frequency", this.ChangeFrequency);
-        this.socket.on("client-change-scale", this.ChangeScale);
-    }
-    ChangeFrequency = (data) => {
 
-        this.Frequence = Math.max(0.01, data.frequency);
+        this.socket.on("client-change-scale", this.ChangeScale);
     }
 
     ChangeScale = (data) => {
@@ -130,7 +123,6 @@ class EnvironmentObject {
 
             Object.assign(triangle, {
                 Positions: positions,
-                Frequence: this.Frequence,
                 Color: colorList
             });
 
