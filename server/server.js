@@ -21,6 +21,7 @@ class Controller {
   speed = 0.1;
   frequency = 3;
   opacity = 0.0;
+  teppich = 1;
 
   constructor() {
 
@@ -38,7 +39,7 @@ class Controller {
 
     // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", { next: this.nextTheme, last: this.lastTheme, duration: this.duration, fog: this.fog, speed: this.speed, opacity: this.opacity, frequency: this.frequency });
+    socket.emit("connectResponse", { next: this.nextTheme, last: this.lastTheme, duration: this.duration, fog: this.fog, speed: this.speed, opacity: this.opacity, frequency: this.frequency,teppich:this.teppich });
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
@@ -48,6 +49,7 @@ class Controller {
     socket.on("client-animate-fog", this.SendFogAnimation)
     socket.on("client-change-opacity", this.ChangeOpacity)
     socket.on("client-change-frequency", this.ChangeFrequency);
+    socket.on("client-change-teppich", this.ChangeTeppich);
   }
 
   SendFogAnimation = (data) => {
@@ -90,7 +92,13 @@ class Controller {
     });
 
   }
-
+  ChangeTeppich = (data) => {
+    Object.keys(this.store.rooms).map(roomID => {
+      console.log("TEPPICH ",data.opacity)
+      this.io.io.sockets.emit("server-teppich-update", data.opacity);
+      this.teppich = data.opacity
+    });
+  }
 
   ChangeFog = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
