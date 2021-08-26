@@ -23,6 +23,7 @@ class Controller {
   opacity = 0.0;
   teppich = 1;
 
+
   constructor() {
 
     this.events.addEventListener("connection", this.OnConnect);
@@ -39,7 +40,17 @@ class Controller {
 
     // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
     //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
-    socket.emit("connectResponse", { next: this.nextTheme, last: this.lastTheme, duration: this.duration, fog: this.fog, speed: this.speed, opacity: this.opacity, frequency: this.frequency,teppich:this.teppich });
+    socket.emit("connectResponse", { 
+      next: this.nextTheme, 
+      last: this.lastTheme, 
+      duration: this.duration, 
+      fog: this.fog, 
+      speed: this.speed, 
+      opacity: this.opacity, 
+      frequency: this.frequency,
+      teppich:this.teppich,
+      canCalibrate : this.store.canCalibrate
+    });
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);

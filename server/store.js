@@ -9,6 +9,7 @@ class store{
   socket =  null;
   users = {};
   timeOffset = 1;
+  canCalibrate = true;
   IsRecording = false;
   RecordName = "MyCustomRecording";
   RecordData = [];
@@ -28,6 +29,7 @@ class store{
     socket.on("leave-room", this.LeaveRoom);
 
     socket.on("client-record" , this.Record);
+    socket.on("client-change-calibration" , this.ChangeCalibration);
 
 
     socket.on("client-delete-friend", (d)=>{
@@ -188,6 +190,14 @@ class store{
     }
   }
   
+  ChangeCalibration = data =>{
+    this.canCalibrate = data.canCalibrate;
+
+    this.context.io.io.emit("server-change-calibration", {
+      canCalibrate : this.canCalibrate
+    });
+
+  }
 
   GetTriangleUser = (roomID) => {
     if(Object.keys(this.users).length == 0){return []}
