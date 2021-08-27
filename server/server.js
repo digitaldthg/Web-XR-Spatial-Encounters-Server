@@ -54,6 +54,7 @@ class Controller {
 
     socket.on("client-change-speed", this.ChangeSpeed);
     socket.on("client-player-explode", this.ExplodePlayer);
+    socket.on("client-player-jump", this.JumpPlayer);
     socket.on("client-theme-lerp", this.StartLerpTheme);
     socket.on("client-change-fog", this.ChangeFog);
     socket.on("client-gamepad-event", this.SendSingleTriangle)
@@ -91,6 +92,10 @@ class Controller {
       this.io.io.sockets.in(roomID).emit("server-player-explode", data);
     });
 
+  }
+
+  JumpPlayer = (data) => {
+      this.io.io.sockets.emit("server-player-jump", data);
   }
 
   StartLerpTheme = (data) => {
@@ -139,7 +144,6 @@ class Controller {
             singleTriangle: tris
           }));
         }
-
 
       }
     });
