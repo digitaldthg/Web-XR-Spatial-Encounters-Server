@@ -86,8 +86,6 @@ class EnvironmentObject {
 
         var numberTris = Math.floor((users.length + 1) / 3);
 
-        console.log("CreateTriangle" , numberTris);
-
         for (var tri = 0; tri < numberTris; tri++) {
             var triangle = Object.assign({}, TriangleDataObject);
             var colorList = [];
