@@ -13,6 +13,7 @@ class store{
   IsRecording = false;
   RecordName = "MyCustomRecording";
   RecordData = [];
+  triangleRotationSpeed = 0.01;
 
   constructor(context) {
     this.context = context;
@@ -30,6 +31,7 @@ class store{
 
     socket.on("client-record" , this.Record);
     socket.on("client-change-calibration" , this.ChangeCalibration);
+    socket.on("client-change-triangleRotationSpeed" , this.ChangeTriangleRotationSpeed);
 
 
     socket.on("client-delete-friend", (d)=>{
@@ -77,11 +79,12 @@ class store{
   CreateRoom = (data) => {
     if(!this.rooms.hasOwnProperty(data.room)){
 
+      //if(typeof(this.context.io.sockets[data.id]) == "undefined"){return;}
+
       this.rooms[data.room] = { users : {}};
       this.rooms[data.room].users[data.id] = null;
       
       console.log("data id und socket ",data, data.id, this.context.io.sockets[data.id]);
-
       this.context.io.sockets[data.id].join(data.room);
 
       this.context.io.io.to(data.id).emit("room-success", {
@@ -117,7 +120,6 @@ class store{
         room : data.room
       });
      
-
       console.log("room existiert noch nicht " , data.room);
     }
   }
@@ -198,6 +200,15 @@ class store{
     });
 
   }
+
+  ChangeTriangleRotationSpeed = (d) => {
+    this.triangleRotationSpeed = d.triangleRotationSpeed;
+
+    this.context.io.io.emit("server-change-triangleRotationSpeed", {
+      triangleRotationSpeed : this.triangleRotationSpeed
+    });
+  }
+
 
   GetTriangleUser = (roomID) => {
     if(Object.keys(this.users).length == 0){return []}

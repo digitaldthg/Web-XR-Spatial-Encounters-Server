@@ -49,7 +49,8 @@ class Controller {
       opacity: this.opacity, 
       frequency: this.frequency,
       teppich:this.teppich,
-      canCalibrate : this.store.canCalibrate
+      canCalibrate : this.store.canCalibrate,
+      triangleRotationSpeed : this.store.triangleRotationSpeed
     });
 
     socket.on("client-change-speed", this.ChangeSpeed);
