@@ -1,6 +1,4 @@
 import Socket from './Classes/Socket';
-
-import Friend from './Classes/Friend';
 import Store from './store';
 import { Events } from './Classes/Events';
 
@@ -28,7 +26,6 @@ class Controller {
 
     this.events.addEventListener("connection", this.OnConnect);
     this.events.addEventListener("disconnect", this.store.Disconnect);
-    //setInterval(this.Interval, 500);
     setInterval(this.UserInterval, 200);
     setInterval(this.SendEnvironment, 200);
   }
@@ -38,8 +35,6 @@ class Controller {
     this.store.Connect(socket);
     this.envObject.Connect(socket);
 
-    // console.log("SEND THEMES ON CONNECT ",{next: this.nextTheme, last:this.lastTheme},socket.id)
-    //this.io.io.to(socket.id).emit("server-theme-update", {next: this.nextTheme, last:this.lastTheme});
     socket.emit("connectResponse", { 
       next: this.nextTheme, 
       last: this.lastTheme, 
@@ -77,18 +72,14 @@ class Controller {
   UserInterval = () => {
     var users = {};
 
-    //console.log(Object.keys(this.store.users));
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetUsersInRoom(roomID);
-
       this.io.io.sockets.in(roomID).emit("server-friends-update", usersInRoom);
 
     });
 
   }
   ExplodePlayer = (data) => {
-
-    //console.log(data);
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-player-explode", data);
     });
@@ -100,7 +91,6 @@ class Controller {
   }
 
   StartLerpTheme = (data) => {
-
     Object.keys(this.store.rooms).map(roomID => {
       this.io.io.sockets.in(roomID).emit("server-theme-lerp", data);
       this.duration = data.duration
@@ -111,7 +101,6 @@ class Controller {
   }
   ChangeTeppich = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
-      console.log("TEPPICH ",data.opacity)
       this.io.io.sockets.emit("server-teppich-update", data.opacity);
       this.teppich = data.opacity
     });
@@ -131,7 +120,6 @@ class Controller {
   }
 
   SendSingleTriangle = () => {
-    // console.log("SEND SINGLE")
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetTriangleUser(roomID);
       if (usersInRoom.length >= 2) {
@@ -151,7 +139,6 @@ class Controller {
   }
   
   ChangeFrequency = (data) => {
-    console.log("FREQU ",data.frequency)
       this.io.io.sockets.emit("server-frequency-update", data.frequency);
       this.frequency = data.frequency;  
   }
@@ -186,7 +173,6 @@ class Controller {
         var tris = this.envObject.CreateTriangle(usersInRoom);
 
         this.io.io.sockets.in(roomID).emit("server-environment-update", tris);
-
 
         if (this.store.IsRecording) {
 

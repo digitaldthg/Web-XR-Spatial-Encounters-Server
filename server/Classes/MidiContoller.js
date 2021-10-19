@@ -23,7 +23,6 @@ class MidiController {
 
                 input.addListener('controlchange', "all",
                     (e) => {
-                        //console.log(e);
                         switch (e.controller.number) {
                             case 0:
                             this.server.ChangeSpeed({ speed: Math.max(0.0001, e.value / 127) }); break;
@@ -39,7 +38,7 @@ class MidiController {
                             var fog = { fog: (e.value / 127)}; 
                             this.server.ChangeFog(fog);
                             break;
-                            case 41:console.log("Single"); if (e.value == 127) {
+                            case 41:if (e.value == 127) {
                                 this.server.SendSingleTriangle();
                             } break;
                             default: break;
