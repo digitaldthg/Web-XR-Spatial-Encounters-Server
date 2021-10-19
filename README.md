@@ -23,4 +23,4 @@ Klonen oder downloaden Sie das Projekt auf Ihren Rechner und installieren Sie di
 
 **3D**
 
-`src > Components > Editor > XRScene.vue`
+??
