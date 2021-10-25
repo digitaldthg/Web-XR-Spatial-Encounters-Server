@@ -1,10 +1,12 @@
 import UserData from "./UserData";
 
-class Friend{
+/**
+ * serverseitige Representanz eines connecteten Users der nicht der eigene User ist
+ */
+class Friend {
 
-  constructor(args){
+  constructor(args) {
     Object.assign(this, UserData(args));
-    //console.log("friend" , this);
   }
 }
 

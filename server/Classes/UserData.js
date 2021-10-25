@@ -1,3 +1,8 @@
+/**
+ * Kreiiert ein neues UserdataObject
+ * @param {object} data 
+ * @returns {object} Ein Object mit sämtlichen Informationen über eine Userin
+ */
 const UserData = (data = {}) => {
 
     var userObj = {

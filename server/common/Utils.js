@@ -1,4 +1,8 @@
 const Utils = {
+  /**
+   * 
+   * @returns Timestamp - Aktuelle Zeit
+   */
   GetCurrentUnixtime : () => {
     return Date.now()
   }
