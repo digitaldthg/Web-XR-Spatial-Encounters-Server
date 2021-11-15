@@ -3,7 +3,7 @@
  */
 const config = { 
   IP : "[YOUR-IP-ADDRESS]",
-  PORT : 3000
+  PORT : 3333
 }
 
 export default config;
