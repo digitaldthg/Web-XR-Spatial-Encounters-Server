@@ -11,7 +11,7 @@ Klonen oder downloaden Sie das Projekt auf Ihren Rechner und installieren Sie di
 
 **Installation** `npm install`
 
-**Development** `npm run serve`
+**Development** `npm run start`
 
 **Build** `npm run build`
 
