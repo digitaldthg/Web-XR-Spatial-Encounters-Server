@@ -6,6 +6,11 @@ import {Events} from './Classes/Events';
 
 import EnvironmentObject from './Classes/EnvironmentObject';
 import MidiController from './Classes/MidiContoller'
+import SaveTheme from './SaveTheme';
+
+
+var archiver = require('archiver');
+var fs = require("fs");
 
 class Controller {
   events = new Events();
@@ -75,6 +80,40 @@ class Controller {
     socket.on("client-change-opacity", this.ChangeOpacity)
     socket.on("client-change-frequency", this.ChangeFrequency);
     socket.on("client-change-teppich", this.ChangeTeppich);
+
+
+
+    socket.on("client-save-theme", this.SaveTheme);
+  }
+
+
+  SaveTheme = async (data)=>{
+    const linkToFolder = await SaveTheme(data);
+    
+
+    var output = fs.createWriteStream('./'+linkToFolder+'.zip');
+    var archive = archiver('zip');
+    output.on('close', () => {
+      console.log(archive.pointer() + ' total bytes');
+      console.log('archiver has been finalized and the output file descriptor has closed.');
+
+      this.io.io.sockets.emit("server-saved-theme",{
+        link : linkToFolder
+      });
+    });
+    
+    archive.on('error', function(err){
+        throw err;
+    });
+    
+    archive.pipe(output);
+    
+    // append files from a sub-directory, putting its contents at the root of archive
+    archive.directory("./" + linkToFolder, data.name.replace(/ /g,""));
+
+    archive.finalize();
+
+    
   }
 
   /**

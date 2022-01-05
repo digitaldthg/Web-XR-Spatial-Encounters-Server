@@ -2,7 +2,7 @@
  * YOUR-IP-ADDRESS entspricht der lokalen IP-Adresse. Muss ebenfalls Client Frontend angegeben werden
  */
 const config = { 
-  IP : "[YOUR-IP-ADDRESS]",
+  IP : "192.168.86.24",
   PORT : 3000
 }
 

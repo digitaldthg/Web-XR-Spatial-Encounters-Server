@@ -1,6 +1,7 @@
 var port = 3333;
 var fs = require('fs');
-var app = require('express')();
+var express = require('express');
+var app = express();
 var path = require("path");
 
 // Achtung! : Self signed Certificate - Dieses Zertifikat wurde selbst kreiiert und während des Developments genutzt - Der Browser vertraut diesem Zertifikat nicht - In Produktion sollte ein eigenes Zertifikat eingebunden werden
@@ -20,7 +21,14 @@ var server = https.createServer({
   rejectUnauthorized: false
 }, app);
 
+
+app.use('/tmp',express.static('tmp'));
+
+//app.use('tmp',express.static(path.join(__dirname, 'tmp')));
+//app.use('/tmp', express.static(path.join(__dirname, '..', 'tmp')));
+
 server.listen(port, '0.0.0.0');
+
 
 //Bindet socket.io auf dem Server ein  
 var io = require('socket.io').listen(server, {secure: true});
