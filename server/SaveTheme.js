@@ -114,12 +114,68 @@ export default function (data){
       }
     ],
     "tex_floor" : SaveImage("tex_floor" , data.tex_floor, tmpFolder),
+    "tex_floor_tile" : {
+      x : data.tex_floor_x,
+      y : data.tex_floor_y,
+    },
+    "tex_floor_offset" : {
+      x : data.tex_floor_offset_x,
+      y : data.tex_floor_offset_y,
+    },
     "tex_skybox" :  SaveImage("tex_skybox" , data.tex_skybox, tmpFolder),
+    "tex_skybox_tile" : {
+      x : data.tex_skybox_x,
+      y : data.tex_skybox_y,
+    },
+    "tex_skybox_offset" : {
+      x : data.tex_skybox_offset_x,
+      y : data.tex_skybox_offset_y,
+    },
     "tex_bg_front" : SaveImage("tex_bg_front" , data.tex_bg_front, tmpFolder),
+    "tex_bg_front_tile" : {
+      x : data.tex_bg_front_x,
+      y : data.tex_bg_front_y,
+    },
+    "tex_bg_front_offset" : {
+      x : data.tex_bg_front_offset_x,
+      y : data.tex_bg_front_offset_y,
+    },
     "tex_bg_back" : SaveImage("tex_bg_back" , data.tex_bg_back, tmpFolder),
+    "tex_bg_back_tile" : {
+      x : data.tex_bg_back_x,
+      y : data.tex_bg_back_y,
+    },
+    "tex_bg_back_offset" : {
+      x : data.tex_bg_back_offset_x,
+      y : data.tex_bg_back_offset_y,
+    },
     "tex_bg_moving": SaveImage("tex_bg_moving" , data.tex_bg_moving, tmpFolder),
+    "tex_bg_moving_tile" : {
+      x : data.tex_bg_moving_x,
+      y : data.tex_bg_moving_y,
+    },
+    "tex_bg_moving_offset" : {
+      x : data.tex_bg_moving_offset_x,
+      y : data.tex_bg_moving_offset_y,
+    },
     "tex_guardian":SaveImage("tex_guardian" , data.tex_guardian, tmpFolder),
+    "tex_guardian_tile" : {
+      x : data.tex_guardian_x,
+      y : data.tex_guardian_y,
+    },
+    "tex_guardian_offset" : {
+      x : data.tex_guardian_offset_x,
+      y : data.tex_guardian_offset_y,
+    },
     "tex_sun":SaveImage("tex_sun" , data.tex_sun, tmpFolder),
+    "tex_sun_tile" : {
+      x : data.tex_sun_x,
+      y : data.tex_sun_y,
+    },
+    "tex_sun_offset" : {
+      x : data.tex_sun_offset_x,
+      y : data.tex_sun_offset_y,
+    },
   }
 
 
@@ -144,6 +200,9 @@ function CheckFormat(stringBase){
 }
 
 function SaveImage(name, imageData, folder){
+
+  if(imageData == null){return null}
+
   let splitter = imageData != null ? imageData.split(';base64,') : null;
 
   let format = splitter != null ? CheckFormat(splitter[0]) : null

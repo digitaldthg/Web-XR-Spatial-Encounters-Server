@@ -125,7 +125,7 @@ class Controller {
 
     Object.keys(this.store.rooms).map(roomID => {
 
-      this.io.io.sockets. in (roomID).emit("server-fog-animate", data);
+      this.io.io.sockets.emit("server-fog-animate", data);
       this.fog = 0.0;
     });
   }
@@ -138,7 +138,7 @@ class Controller {
 
     Object.keys(this.store.rooms).map(roomID => {
       var usersInRoom = this.store.GetUsersInRoom(roomID);
-      this.io.io.sockets. in (roomID).emit("server-friends-update", usersInRoom);
+      this.io.io.sockets.emit("server-friends-update", usersInRoom);
 
     });
   }
@@ -149,7 +149,7 @@ class Controller {
    */
   ExplodePlayer = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets. in (roomID).emit("server-player-explode", data);
+      this.io.io.sockets.emit("server-player-explode", data);
     });
   }
 
@@ -169,7 +169,7 @@ class Controller {
   StartLerpTheme = (data) => {
 
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets. in (roomID).emit("server-theme-lerp", data);
+      this.io.io.sockets.emit("server-theme-lerp", data);
       this.duration = data.duration
       this.lastTheme = data.last
       this.nextTheme = data.next
@@ -182,7 +182,7 @@ class Controller {
    */
   ChangeTeppich = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets. in (roomID).emit("server-teppich-update", data.opacity);
+      this.io.io.sockets.emit("server-teppich-update", data.opacity);
       this.teppich = data.opacity
     });
   }
@@ -193,7 +193,7 @@ class Controller {
    */
   ChangeFog = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets. in (roomID).emit("server-fog-update", data.fog);
+      this.io.io.sockets.emit("server-fog-update", data.fog);
       this.fog = data.fog
     });
   }
@@ -203,7 +203,7 @@ class Controller {
    */
   ChangeOpacity = (data) => {
     Object.keys(this.store.rooms).map(roomID => {
-      this.io.io.sockets. in (roomID).emit("server-opacity-update", data.opacity);
+      this.io.io.sockets.emit("server-opacity-update", data.opacity);
       this.opacity = data.opacity
     });
   }
@@ -217,7 +217,7 @@ class Controller {
       if (usersInRoom.length >= 2) {
         var tris = this.envObject.CreateTriangle(usersInRoom);
 
-        this.io.io.sockets. in (roomID).emit("server-single-triangle-update", tris);
+        this.io.io.sockets.emit("server-single-triangle-update", tris);
 
         if (this.store.IsRecording) {
           this.store.AddRecordData(this.GenerateTimeStamp({singleTriangle: tris}));
@@ -232,7 +232,7 @@ class Controller {
    * @param {object} data 
    */
   ChangeFrequency = (data) => {
-    this.io.io.sockets. in (roomID).emit("server-frequency-update", data.frequency);
+    this.io.io.sockets.emit("server-frequency-update", data.frequency);
     this.frequency = data.frequency;
   }
 
@@ -240,7 +240,7 @@ class Controller {
    * Emitted die Geschwindigkeit mit welcher die Dreiecke gespawnt werden an alle gebundenen Userinnen
    */
   ChangeSpeed = (data) => {
-    this.io.io.sockets. in (roomID).emit("server-speed-update", data.speed);
+    this.io.io.sockets.emit("server-speed-update", data.speed);
     this.speed = data.speed;
 
   }
@@ -274,7 +274,7 @@ class Controller {
 
         var tris = this.envObject.CreateTriangle(usersInRoom);
 
-        this.io.io.sockets. in (roomID).emit("server-environment-update", tris);
+        this.io.io.sockets.emit("server-environment-update", tris);
 
         if (this.store.IsRecording) {
 
@@ -283,7 +283,7 @@ class Controller {
 
 
       } else {
-        this.io.io.sockets. in (roomID).emit("server-environment-update", {Triangles: []});
+        this.io.io.sockets.emit("server-environment-update", {Triangles: []});
 
         if (this.store.IsRecording) {
           this.store.AddRecordData(this.GenerateTimeStamp({tris: []}));
